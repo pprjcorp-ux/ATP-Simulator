@@ -123,6 +123,18 @@ Pesquisa inicial em 9 de novembro de 2026. O acesso direto à página de pergunt
 
 O anúncio oficial confirma que o calendário principal de 2027 já foi publicado. A pesquisa não validou um calendário Challenger completo de 2027 nem um conjunto completo de regras e rankings iniciais de 2027. O PDF de janeiro foi localizado como referência inicial, sem comprovação de ser a revisão mais recente. Dados ainda não disponíveis ou não verificados não devem ser inventados e apresentados como oficiais. O desenvolvimento pode usar dados provisórios identificados, com atualização posterior das fontes.
 
+### Conferência adicional de fontes — 9 de novembro de 2026
+
+| Dado | Evidência localizada | Limite de uso |
+| --- | --- | --- |
+| Savannah Challenger 2027 | O [organizador anuncia 5–11 de abril de 2027](https://savannahchallenger.com/tournament/). | Confirma a data anunciada desse evento. A mesma página conserva resultados e ordens de jogo de outras edições; não importar esses blocos como dados de 2027. Categoria, premiação e regras de entrada ainda precisam de fonte específica. |
+| Sede das ATP Finals de 2027 | A [ATP confirmou Turim em 16 de julho de 2026](https://www.atptour.com/en/news/nitto-atp-finals-2027-turin-extension), em texto oficial disponível no índice de pesquisa. | Atualiza a sede genérica “Itália” do calendário inicial; valores financeiros de edições anteriores na notícia não são a premiação de 2027. |
+| Regras de ranking versionadas | A [ATP anunciou 18 resultados contabilizáveis em 2026](https://www.atptour.com/en/news/atp-builds-on-record-year-2026), em vez dos 19 anteriores. | Evidência de mudança entre temporadas. Não assumir que uma fórmula antiga ou a de 2026 já corresponde ao regulamento de 2027. |
+
+Foram localizados também links de PDFs combinados com datas de [18 de junho](https://www.atptour.com/-/media/files/calendar-pdfs/2026/2026-27-atp-challenger-calendar-as-of-18-jun-2026.pdf) e [18 de agosto de 2026](https://www.atptour.com/-/media/files/calendar-pdfs/2026/2026-27-atp-challenger-calendar-as-of-18-aug-2026.pdf). O acesso direto retornou HTTP 403; o conteúdo completo e a revisão mais recente continuam sem validação. Um título contendo “2026–27” não comprova que todos os eventos Challenger de 2027 estejam incluídos.
+
+Na carga de dados, conferir a temporada em cada seção e associar origem, data de consulta e estado de confirmação aos campos importados. Datas anunciadas pelo organizador são evidência por evento, não substituem a validação do calendário completo pela ATP.
+
 ## Execução do projeto
 
 A implementação começa na nuvem, depois da validação do ambiente e do acesso ao repositório. Este documento registra decisões de produto e propostas; não constitui uma implementação ou uma validação do jogo.
