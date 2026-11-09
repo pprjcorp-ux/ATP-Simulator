@@ -1,0 +1,141 @@
+"""Authoritative development match. Coordinates are metres; time is seconds.
+Balance parameters are provisional, not official ATP regulations.
+"""
+import random
+
+
+def trajectory(start, end, duration):
+    return [(end[i] - start[i]) / duration if i != 1 else
+            (end[1] - start[1] + 4.905 * duration**2) / duration for i in range(3)]
+
+
+class Match:
+    def __init__(self, seed=2027):
+        self.rng = random.Random(seed)
+        self.events = []
+        self.time = 0.0
+        self.points = [0, 0]
+        self.games = [0, 0]
+        self.sets = [0, 0]
+        self.server = 0
+        self.positions = [[1.5, 0, 12.5], [-1.5, 0, -12.5]]
+        self.plans = [dict(intensity=0.6, aggression=0.5) for _ in range(2)]
+        self.game_number = 0
+        self.finished = False
+        self.tie_points = None
+        self.tie_first_server = 0
+        self.emit('ready')
+
+    def emit(self, kind, **data):
+        event = dict(seq=len(self.events), at=round(self.time, 4), kind=kind,
+                     points=self.points.copy(), games=self.games.copy(), sets=self.sets.copy(),
+                     server=self.server, game_number=self.game_number, **data)
+        self.events.append(event)
+        return event
+
+    def flight(self, start, end, duration, kind, player):
+        targets = [p.copy() for p in self.positions]
+        if kind in ('serve', 'return', 'stroke') and abs(end[0]) <= 4.115:
+            receiver = 1-player
+            receive_x = end[0] * (1.4 if kind == 'serve' else 1.05)
+            targets[receiver] = [receive_x - 0.55, 0, -12.4 if receiver == 1 else 12.4]
+        self.emit(kind, player=player, start=start, end=end, move_targets=targets,
+                  duration=duration, velocity=trajectory(start, end, duration),
+                  positions=[p.copy() for p in self.positions])
+        self.time += duration
+
+    def play_point(self):
+        hitter = self.server
+        side = 1 if hitter == 0 else -1
+        court_side = 1 if sum(self.tie_points or self.points) % 2 == 0 else -1
+        self.positions[hitter] = [1.5 * court_side * side, 0, 12.5 * side]
+        self.positions[1-hitter] = [-1.5 * court_side * side, 0, -12.5 * side]
+        # Toss and contact are explicit events. The service lands diagonally.
+        origin = [self.positions[hitter][0] + 0.55, 1.2, 12.1 * side]
+        contact = [origin[0], 2.8, origin[2]]
+        self.flight(origin, contact, 0.7, 'toss', hitter)
+        target = [-court_side * side * self.rng.uniform(1, 3), 0.034, -4.8 * side]
+        self.flight(contact, target, 0.66, 'serve', hitter)
+        self.emit('bounce', position=target)
+        # Receive after the bounce; racket position is derived from contact.
+        contact = [target[0] * 1.4, 1.05, -11.4 * side]
+        self.flight(target, contact, 0.58, 'rebound', 1-hitter)
+        hitter = 1-hitter
+        for stroke in range(2 + self.rng.randrange(7)):
+            side = 1 if hitter == 0 else -1
+            self.positions[hitter] = [contact[0] - 0.55, 0, contact[2] + 0.4 * side]
+            plan = self.plans[hitter]
+            # Aiming and errors depend on the active server-side plan.
+            error = self.rng.random() < 0.08 + plan['aggression'] * 0.10
+            x = self.rng.uniform(-3.7, 3.7)
+            target = [x if not error else 5.0, 0.034, -side * self.rng.uniform(7.0, 10.2)]
+            self.flight(contact, target, 0.88 - plan['intensity'] * 0.12,
+                        'return' if stroke == 0 else 'stroke', hitter)
+            self.emit('bounce', position=target)
+            if error:
+                winner = 1-hitter
+                reason = 'wide'
+                break
+            contact = [x * 1.05, 1.05, -side * 12.0]
+            self.flight(target, contact, 0.42, 'rebound', 1-hitter)
+            hitter = 1-hitter
+        else:
+            # Receiver cannot reach the last legal ball; second bounce ends point.
+            landing = [contact[0], 0.034, contact[2] + (-2 if hitter == 1 else 2)]
+            self.flight(contact, landing, 0.44, 'unreached', hitter)
+            self.emit('bounce', position=landing)
+            winner = 1-hitter
+            reason = 'second_bounce'
+        self.award(winner, reason)
+        self.time += 2.5
+
+    def award(self, winner, reason):
+        if self.tie_points is not None:
+            self.award_tiebreak(winner, reason)
+            return
+        self.points[winner] += 1
+        self.emit('point', winner=winner, reason=reason)
+        other = 1-winner
+        if self.points[winner] >= 4 and self.points[winner]-self.points[other] >= 2:
+            self.games[winner] += 1
+            self.points = [0, 0]
+            self.game_number += 1
+            self.server = 1-self.server
+            self.emit('game', winner=winner)
+            # Standard set threshold, tie-break implemented separately below.
+            if self.games[winner] >= 6 and self.games[winner]-self.games[other] >= 2:
+                self.sets[winner] += 1
+                self.emit('set', winner=winner)
+                self.games = [0, 0]
+                if self.sets[winner] == 2:
+                    self.finished = True
+                    self.emit('finished', winner=winner)
+            elif self.games == [6, 6]:
+                self.tie_points = [0, 0]
+                self.tie_first_server = self.server
+                self.emit("tiebreak_start", tiebreak=self.tie_points.copy())
+
+    def award_tiebreak(self, winner, reason):
+        self.tie_points[winner] += 1
+        self.emit('tiebreak_point', winner=winner, reason=reason, tiebreak=self.tie_points.copy())
+        total = sum(self.tie_points)
+        self.server = self.tie_first_server if ((total + 1) // 2) % 2 == 0 else 1-self.tie_first_server
+        if self.tie_points[winner] >= 7 and self.tie_points[winner]-self.tie_points[1-winner] >= 2:
+            self.games[winner] += 1
+            self.sets[winner] += 1
+            self.emit('set', winner=winner, tiebreak=self.tie_points.copy())
+            self.games = [0, 0]
+            self.tie_points = None
+            self.server = 1-self.tie_first_server
+            self.game_number += 1
+            if self.sets[winner] == 2:
+                self.finished = True
+                self.emit('finished', winner=winner)
+
+    def next_game(self):
+        game = self.game_number
+        while not self.finished and self.game_number == game:
+            self.play_point()
+        if not self.finished:
+            self.emit('instruction_window', closes_at=self.time + 12)
+            self.time += 12

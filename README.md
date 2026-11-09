@@ -31,9 +31,9 @@ Crie um profissional com nível técnico de Challenger, conquiste sua posição 
 
 ## Estado do projeto
 
-**Pré-produção.** Este repositório contém decisões de produto e preparação para a implementação. Ainda não há uma versão jogável, engine selecionada, dependências de jogo, build ou testes de execução.
+**Implementação inicial na nuvem.** Godot 4.6.3 com cena 3D conectada a uma autoridade Python/SQLite. A fundação possui testes de placar, persistência e prazos; ainda não atende ao primeiro recorte completo nem à qualidade visual aprovada. Consulte [execução e limites](docs/IMPLEMENTATION.md) e [evidências por plataforma](docs/validation/2026-11-09.md).
 
-A implementação começará em um **ambiente de nuvem**. A preparação local está limitada à documentação e à organização do repositório. Exportar um executável futuramente não substituirá a validação da partida em 3D e da carreira em cada sistema operacional suportado.
+A implementação está em um **ambiente de nuvem**. A preparação local está limitada à documentação e à organização do repositório. Exportar um executável futuramente não substituirá a validação da partida em 3D e da carreira em cada sistema operacional suportado.
 
 ## Documentação
 
