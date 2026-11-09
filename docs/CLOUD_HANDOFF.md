@@ -1,0 +1,66 @@
+# ATP Simulator — preparação para a nuvem
+
+## Limite de execução
+
+O usuário determinou que a implementação do jogo comece na nuvem. A etapa local prepara o produto e o repositório. Este documento não comprova uma migração: é necessário observar um ambiente executável, um checkout correto e comandos executados nesse ambiente.
+
+Repositório: https://github.com/pprjcorp-ux/ATP-Simulator
+
+## Contexto confirmado
+
+Ler primeiro [GAME_DESIGN.md](GAME_DESIGN.md). As decisões já respondidas pelo usuário são:
+
+1. Jogo para Windows e macOS desde a primeira versão.
+2. Partidas 3D realistas, com proporções, movimentos e câmera próximos de uma transmissão de TV.
+3. Atleta criado começando no Challenger, perto do top 300.
+4. Calendário e adversários reais.
+5. Golpes automáticos; o jogador dá instruções táticas e altera intensidade entre games.
+6. Gestão no máximo detalhe: treinos, finanças, equipe, viagens e equipamentos.
+7. Treino físico e técnico, patrocínios, raquete, cordas, calendário, descanso e risco de lesão são partes obrigatórias da carreira.
+
+Uma interface de gestão isolada, uma partida apenas textual ou um demonstrador 2D não atendem à direção confirmada. O primeiro recorte deve caminhar para a carreira completa até o número 1; um protótipo não encerra o objetivo.
+
+## Preparação do ambiente
+
+1. Confirmar que o ambiente pertence a este projeto e está executável. Se houver ferramentas de status do ambiente, usá-las antes de presumir acesso.
+2. Verificar que o checkout corresponde ao repositório e à revisão pretendidos. Ler o estado Git e preservar alterações existentes.
+3. Confirmar acesso ao repositório, instalação de dependências de fontes oficiais, capacidade de executar testes e disponibilidade de renderização 3D.
+4. Escolher e fixar uma versão estável da engine e dos exportadores. A decisão deve considerar animação de personagens, contato raquete/bola, Windows, macOS e validação em nuvem.
+5. Configurar um build mínimo em branch `codex/` e validar sua execução no próprio ambiente. Não instalar a ferramenta de desenvolvimento local como substituto da migração solicitada.
+6. Registrar comandos e resultados reais. Distinguir execução sem interface, exportação, observação visual e validação em cada sistema operacional.
+
+## Estrutura funcional proposta
+
+- **Carreira:** agenda, treino, fadiga, evolução, equipe, finanças, equipamento e patrocínios.
+- **Circuito:** eventos, inscrições, acesso às chaves, sorteios, partidas dos adversários, pontuação e ranking.
+- **Partida:** regras de tênis, escolhas dos atletas, deslocamento, golpes, condição física e orientações entre games.
+- **Apresentação 3D:** quadra, personagens, animação, bola, câmera, placar, áudio e estatísticas.
+- **Persistência:** salvar e retomar todos os componentes relevantes da carreira.
+- **Dados:** temporada de referência, atletas e fontes rastreáveis, com regras e calendários versionados.
+
+As camadas devem se conectar de forma observável. A trajetória da bola, o contato com a raquete, o resultado dos pontos e o placar precisam ser coerentes. A aceleração de uma partida não pode alterar suas regras ou favorecer um atleta.
+
+## Próximo recorte a discutir com o usuário
+
+Proposta: um trecho jogável no Challenger com agenda, treino, descanso, viagem, equipamento, finanças, uma proposta de patrocínio, torneio e partida 3D. Incluir orientações entre games, pós-jogo, atualização do ranking e salvar/carregar.
+
+Fora desse recorte inicial, mas dentro do objetivo final: circuito e temporadas completos, variedade de contratos e equipe, progressão de longo prazo, manutenção de todos os adversários, regras de ranking e elegibilidade da temporada escolhida e qualidade visual consistente.
+
+Não fixar preços, durações, atributos, fórmulas de lesão ou progressão como se já tivessem sido aprovados. São decisões de balanceamento ainda abertas.
+
+## Evidências esperadas para o primeiro recorte
+
+- Partida observada em 3D: saque, devolução, rali, ponto, game e placar coerentes.
+- Instrução entre games aplicada ao próximo game, preservando o resultado dos pontos já jogados.
+- Treino e descanso produzem mudanças explicáveis; fadiga persiste entre partidas.
+- Equipamento e intensidade afetam a simulação e aparecem no resumo de desempenho.
+- Gastos, receitas e obrigações contratuais alteram o mesmo saldo persistente.
+- Adversários também geram resultados e alterações do ranking.
+- Salvar e carregar preserva calendário, atleta, contratos, finanças, torneios e estado aleatório relevante.
+- Exportação para Windows e macOS testada separadamente; limitações de execução ou assinatura registradas.
+
+## Recuperação do conteúdo anterior
+
+O usuário autorizou remover todo o projeto Pluto/OpenClaw que estava neste repositório e manter apenas o novo jogo. Antes da remoção, o commit `ca1fc007b62efc569d919ca756bfaebf7c0735a1` foi preservado na branch `codex/archive-pre-tennis-20261109`.
+
+A cópia preserva a recuperação do projeto anterior. Seus scripts operacionais, dependências e integrações não fazem parte do ATP Simulator e não devem ser executados para configurar o jogo.
