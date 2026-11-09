@@ -2,6 +2,12 @@
 
 **Estado:** escopo e sequência de execução aprovados pelo usuário em 9 de novembro de 2026, incluindo o relógio comum ao vivo e a pausa/aceleração nos replays. O usuário autorizou concluir a configuração do ambiente e abrir um novo chat de desenvolvimento na nuvem. Ainda não há jogo implementado.
 
+## Prioridade atual: MVP local para teste
+
+Após o primeiro desenvolvimento, o usuário autorizou priorizar um MVP para jogar em sua própria máquina e ajustar o jogo antes de adicionar a complexidade do circuito público e do deploy. Confirmou macOS com Apple Silicon como máquina de teste e aceitou duração de aproximadamente uma hora por partida. Essa orientação substitui o alvo de 10–15 minutos para o teste atual.
+
+A sessão local de teste não substitui o objetivo final do circuito mundial. Instalação pública, autenticação, dados/ranking oficiais e execução Windows ficam para as próximas etapas. O MVP atual usa evento e atletas fictícios identificados, save local e um adversário automático. Ver [MVP_LOCAL.md](MVP_LOCAL.md).
+
 ## A experiência
 
 Um jogo gratuito de gestão de carreira para Windows e macOS, em português, inglês e espanhol. Todos participam de um único circuito mundial online, com ranking compartilhado. O objetivo é levar um atleta criado ao número 1 em uma simulação dura, com concorrência real de outros jogadores e possibilidade de a carreira não dar certo.

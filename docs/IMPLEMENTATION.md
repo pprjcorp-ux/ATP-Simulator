@@ -6,6 +6,10 @@ Godot **4.6.3 stable official**, identificado por `.godot-version`; cliente GDSc
 
 Servidor Python 3 com biblioteca padrão e SQLite: uma autoridade, relógio comum, histórico ordenado, planos por participante e comandos idempotentes. O cliente nunca envia pontos ou vencedores. SQLite persiste estado, gerador aleatório, eventos e confirmações na mesma transação. Serviço restrito a loopback, com identidades de teste; **não publicar este serviço** antes de autenticação, autorização por atleta, limites operacionais e migrações.
 
+## MVP local atual
+
+O app passa a iniciar uma autoridade local por padrão. No Mac Apple Silicon, o pacote inclui CPython isolado; na nuvem de desenvolvimento, usa o Python disponível. Porta automática em loopback, token por sessão, save no diretório do usuário e bloqueio para impedir duas autoridades no mesmo save. Não há publicação de serviço nem uso de credenciais. [Guia do MVP](MVP_LOCAL.md).
+
 ## Executar
 
 Na raiz do repositório:
@@ -17,7 +21,7 @@ python3 -m server.http --database world.sqlite3
 Em outro terminal:
 
 ```sh
-godot --path client
+godot --path client -- --external-server
 ```
 
 Dois processos Godot podem observar a mesma autoridade. O cliente consulta o relógio e os eventos públicos com dois segundos de buffer. Reabrir o cliente recupera o estado; não reinicia a partida. O arquivo de banco conserva a partida entre reinícios do servidor.
@@ -32,7 +36,7 @@ godot --headless --path client --quit-after 120
 
 Primeira fundação, não marco aceito. Dados fictícios de teste, evento de acesso de desenvolvimento, sem ranking/pontos ATP ou calendário oficial importado. Atributos, fórmulas e intervalos são provisórios.
 
-A simulação tem placar com vantagem, sets e tie-break por pontos, lançamento, saque, quique, devolução e rali com trajetórias balísticas. Ainda faltam segundo saque/faltas, let, trocas de lado, seleção de golpes avançada e colisão física raquete/bola. Alcance usa velocidade, intensidade e fadiga provisórias; não é ainda um modelo biomecânico. O histórico dirige a apresentação; o contato ainda é uma restrição geométrica do evento, sem IK ou animação humana final. Não tratar esse estado como tênis realista concluído.
+A simulação tem placar com vantagem, sets e tie-break por pontos, lançamento, saque, quique, devolução e rali com trajetórias balísticas. Há primeiro/segundo saque, dupla falta e troca de lado. Ainda faltam let, seleção avançada de golpes e colisão física raquete/bola. Alcance usa velocidade, intensidade e fadiga provisórias; não é ainda um modelo biomecânico. O histórico dirige a apresentação; o contato é uma restrição geométrica do evento, com membros articulados proceduralmente e sem animação humana final. Não tratar esse estado como tênis realista concluído.
 
 Planos de intensidade e agressividade alteram duração e erro dos golpes futuros. Ausência conserva o plano, sem penalidade de atributos. API de instrução valida identidade da partida, game e prazo. O painel permite orientar nos intervalos e preparar as próximas semanas. Replay local oferece pausa, velocidades e retorno ao vivo; a autoridade continua avançando.
 

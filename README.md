@@ -4,6 +4,12 @@ Jogo gratuito de gestão de carreira de tênis para **Windows e macOS**, em dese
 
 Crie um profissional com nível técnico de Challenger, conquiste sua posição pelos resultados e administre a carreira para disputar o **número 1 do ranking mundial compartilhado**. Acompanhe partidas em **3D realista**, com câmera de transmissão, e ajuste intensidade e instruções táticas **entre os games**. Os tenistas executam os golpes automaticamente.
 
+## MVP local para teste
+
+A prioridade atual é um app para **macOS com Apple Silicon**, com sessão local automática, criação do atleta, preparação, partida 3D e save no computador. Não exige instalar Python ou Godot. Veja o [guia de instalação e jogo](docs/MVP_LOCAL.md). O pacote experimental é entregue neste chat; o código e o empacotamento estão no repositório.
+
+O usuário aceitou partidas de aproximadamente uma hora e adiou circuito público, autenticação e deploy até testar e ajustar este MVP. A experiência mundial online continua no objetivo final.
+
 ## Direção confirmada
 
 - Calendário e adversários reais; atleta do jogador criado.
