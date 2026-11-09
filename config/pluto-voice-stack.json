@@ -1,0 +1,53 @@
+{
+  "agent": {
+    "id": "openclaw-main",
+    "identity": "Pluto",
+    "gateway": "http://127.0.0.1:18789"
+  },
+  "hardware": {
+    "camera": {
+      "name": "Insta360 Link 2",
+      "avfoundationVideoIndex": 0,
+      "preferredCapturePath": "openclaw-macos-node-then-avfoundation",
+      "openclawCapability": "camera"
+    },
+    "microphone": {
+      "name": "fifine Microphone",
+      "physicalSource": "Fifine USB microphone",
+      "avfoundationAudioIndex": 4,
+      "coreAudioDefaultInput": true,
+      "macosInputVolume": 100
+    },
+    "speakers": {
+      "name": "Fosi Audio K5 Pro",
+      "physicalOutput": "Edifier M60 speakers downstream of DAC/AMP"
+    }
+  },
+  "stt": {
+    "provider": "openai",
+    "model": "openai/gpt-4o-transcribe",
+    "activationMode": "bounded-turn-or-push-to-talk",
+    "alwaysListening": false,
+    "languageHint": "pt",
+    "promptKeywords": [
+      "Pluto",
+      "OpenClaw",
+      "Codex",
+      "Insta360",
+      "Fifine",
+      "Edifier",
+      "Fosi K5 Pro"
+    ]
+  },
+  "tts": {
+    "provider": "openai",
+    "model": "openai/gpt-4o-mini-tts",
+    "voice": "cedar",
+    "disclosure": "AI-generated voice"
+  },
+  "validation": {
+    "script": "scripts/pluto-av-smoke.sh",
+    "artifactsDir": "tmp/av",
+    "speechOutputDir": "output/speech"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "id": "mira-cursor",
+  "displayName": "Mira Cursor",
+  "description": "A tiny cartoon Federer-style Wimbledon tennis companion, with no logos or readable text.",
+  "spritesheetPath": "spritesheet.webp"
+}
