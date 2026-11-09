@@ -10,7 +10,12 @@ var players: Array[Node3D] = []
 var rackets: Array[Node3D] = []
 var score := Label.new()
 var status := Label.new()
-var last_event := -1
+var official_time := 0.0
+var fixture := ""
+var cursor := -1
+var replay_mode := false
+var replay_rate := 1.0
+var career_panel: PanelContainer
 
 func material(color: Color) -> StandardMaterial3D:
 	var mat := StandardMaterial3D.new()
@@ -84,7 +89,8 @@ func _ready() -> void:
 	ball = sphere(self, 0.067, Vector3(0, 1, 0), Color("e7ff54"))
 	var camera := Camera3D.new()
 	add_child(camera)
-	camera.position = Vector3(15, 20, 32)
+	camera.position = Vector3(4, 24, 34)
+	camera.h_offset = 6
 	camera.look_at(Vector3(0, 0, 0))
 	camera.fov = 48
 	var light := DirectionalLight3D.new()
@@ -107,12 +113,32 @@ func _ready() -> void:
 	status.position = Vector2(32, 710)
 	status.add_theme_font_size_override("font_size", 18)
 	layer.add_child(status)
+	var replay := Button.new()
+	replay.position = Vector2(32, 160)
+	replay.text = "Replay"
+	replay.pressed.connect(func(): replay_mode = true; live_time = 0.0)
+	layer.add_child(replay)
+	var live := Button.new()
+	live.position = Vector2(120, 160)
+	live.text = "Ao vivo / Live / En vivo"
+	live.pressed.connect(func(): replay_mode = false; live_time = maxf(0, official_time - 2.0))
+	layer.add_child(live)
+	var speed := OptionButton.new()
+	speed.position = Vector2(335, 160)
+	for label in ["Pausa / Pause", "0.5×", "1×", "2×", "4×"]:
+		speed.add_item(label)
+	speed.select(2)
+	speed.item_selected.connect(func(index): replay_rate = [0.0, 0.5, 1.0, 2.0, 4.0][index])
+	layer.add_child(speed)
+	career_panel = PanelContainer.new()
+	career_panel.set_script(preload("res://career_panel.gd"))
+	layer.add_child(career_panel)
 	add_child(request)
 	request.request_completed.connect(received)
 	poll()
 
 func poll() -> void:
-	request.request("http://127.0.0.1:8765/match")
+	request.request("http://127.0.0.1:8765/match?after=%d" % cursor)
 
 func received(result: int, code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
 	if result != HTTPRequest.RESULT_SUCCESS or code != 200:
@@ -122,9 +148,18 @@ func received(result: int, code: int, _headers: PackedStringArray, body: PackedB
 	var data = JSON.parse_string(body.get_string_from_utf8())
 	if not data is Dictionary:
 		return
-	events = data.events
+	if fixture != str(data.fixture):
+		fixture = str(data.fixture)
+		events.clear()
+		cursor = -1
+		replay_mode = false
+		return
+	events.append_array(data.events)
+	cursor = int(data.last_seq)
+	official_time = float(data.elapsed)
 	# Two-second presentation buffer; never requests or displays future events.
-	live_time = maxf(0, float(data.elapsed) - 2.0)
+	if not replay_mode:
+		live_time = maxf(0, float(data.elapsed) - 2.0)
 	connected = true
 
 func _process(delta: float) -> void:
@@ -135,7 +170,11 @@ func _process(delta: float) -> void:
 			poll()
 	if not connected:
 		return
-	live_time += delta
+	official_time += delta
+	var play_delta := delta * (replay_rate if replay_mode else 1.0)
+	live_time += play_delta
+	live_time = minf(live_time, maxf(0, official_time - 2.0))
+	career_panel.update_window(events, official_time, fixture)
 	var current: Dictionary = {}
 	for event in events:
 		if float(event.at) > live_time:
@@ -145,7 +184,9 @@ func _process(delta: float) -> void:
 		score.text = "ATP SIMULATOR  /  Aguardando início"
 		return
 	score.text = "ACESSO • TESTE 2027\nA   %d sets   %d games   %s\nB   %d sets   %d games   %s" % [current.sets[0], current.games[0], point_label(current.points, 0), current.sets[1], current.games[1], point_label(current.points, 1)]
-	status.text = "AO VIVO  •  %s\nAtletas fictícios • ambiente de desenvolvimento • sem pontos ATP" % current.kind
+	status.text = "%s  •  %s\nAtletas fictícios • ambiente de desenvolvimento • sem pontos ATP" % ["REPLAY" if replay_mode else "AO VIVO", current.kind]
+	if current.has("tiebreak"):
+		score.text += "\nTie-break  %d–%d" % current.tiebreak
 	if current.has("velocity"):
 		var t := clampf(live_time - float(current.at), 0, float(current.duration))
 		ball.position = vector(current.start) + vector(current.velocity) * t + Vector3(0, -4.905 * t * t, 0)
@@ -153,9 +194,9 @@ func _process(delta: float) -> void:
 			var goal := vector(current.move_targets[index])
 			if int(current.player) == index and current.kind in ["serve", "return", "stroke"]:
 				goal = vector(current.start) - Vector3(0.55, float(current.start[1]), -0.4 if index == 0 else 0.4)
-			players[index].position = players[index].position.move_toward(goal, delta * 7)
+			players[index].position = players[index].position.move_toward(goal, play_delta * 7)
 			rackets[index].position = players[index].position + Vector3(0.55, 1.05, 0)
-			if int(current.player) == index and current.kind in ["serve", "return", "stroke"]:
+			if int(current.player) == index and current.kind in ["serve", "return", "stroke"] and t < 0.15:
 				rackets[index].position = vector(current.start) + Vector3(0, 0, sin(t * 10) * 0.25)
 
 func point_label(points: Array, index: int) -> String:

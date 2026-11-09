@@ -2,6 +2,7 @@
 import argparse
 import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from urllib.parse import urlsplit, parse_qs
 from server.world import World
 
 
@@ -22,12 +23,19 @@ def main():
             self.wfile.write(data)
 
         def do_GET(self):
-            if self.path != '/match':
+            if self.path == '/career':
+                return self.respond(200, world.career_snapshot())
+            url = urlsplit(self.path)
+            if url.path != '/match':
                 return self.respond(404, {'error': 'not found'})
-            self.respond(200, world.snapshot())
+            try:
+                after = int(parse_qs(url.query).get('after', ['-1'])[0])
+                self.respond(200, world.snapshot(after))
+            except ValueError:
+                self.respond(400, {'error': 'invalid event cursor'})
 
         def do_POST(self):
-            if self.path != '/instruction':
+            if self.path not in ('/instruction', '/career', '/schedule'):
                 return self.respond(404, {'error': 'not found'})
             try:
                 size = int(self.headers.get('Content-Length', '0'))
@@ -36,7 +44,13 @@ def main():
                 command = json.loads(self.rfile.read(size))
                 if not isinstance(command, dict):
                     raise ValueError('invalid command')
-                self.respond(200, world.instruction(command))
+                if self.path == '/schedule':
+                    response = world.schedule_next(command)
+                elif self.path == '/instruction':
+                    response = world.instruction(command)
+                else:
+                    response = world.career_command(command)
+                self.respond(200, response)
             except (ValueError, TypeError) as error:
                 self.respond(400, {'error': str(error)})
 

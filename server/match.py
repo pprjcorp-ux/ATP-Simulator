@@ -19,6 +19,7 @@ class Match:
         self.sets = [0, 0]
         self.server = 0
         self.positions = [[1.5, 0, 12.5], [-1.5, 0, -12.5]]
+        self.profiles = [dict(speed=60, fitness=60, forehand=60, fatigue=0, equipment='balanced', tension=24) for _ in range(2)]
         self.plans = [dict(intensity=0.6, aggression=0.5) for _ in range(2)]
         self.game_number = 0
         self.finished = False
@@ -39,6 +40,8 @@ class Match:
             receiver = 1-player
             receive_x = end[0] * (1.4 if kind == 'serve' else 1.05)
             targets[receiver] = [receive_x - 0.55, 0, -12.4 if receiver == 1 else 12.4]
+        if kind == 'rebound':
+            targets[player] = [end[0]-0.55, 0, end[2]+(0.4 if player == 0 else -0.4)]
         self.emit(kind, player=player, start=start, end=end, move_targets=targets,
                   duration=duration, velocity=trajectory(start, end, duration),
                   positions=[p.copy() for p in self.positions])
@@ -61,12 +64,16 @@ class Match:
         contact = [target[0] * 1.4, 1.05, -11.4 * side]
         self.flight(target, contact, 0.58, 'rebound', 1-hitter)
         hitter = 1-hitter
-        for stroke in range(2 + self.rng.randrange(7)):
+        stroke = 0
+        while True:
             side = 1 if hitter == 0 else -1
             self.positions[hitter] = [contact[0] - 0.55, 0, contact[2] + 0.4 * side]
             plan = self.plans[hitter]
             # Aiming and errors depend on the active server-side plan.
-            error = self.rng.random() < 0.08 + plan['aggression'] * 0.10
+            profile = self.profiles[hitter]
+            skill = profile['forehand'] - profile['fatigue'] * 0.12
+            control = 0.02 if profile['equipment'] == 'control' else -0.02 if profile['equipment'] == 'power' else 0
+            error = self.rng.random() < max(0.03, 0.08 + plan['aggression'] * 0.10 + (60-skill)*0.003 - control)
             x = self.rng.uniform(-3.7, 3.7)
             target = [x if not error else 5.0, 0.034, -side * self.rng.uniform(7.0, 10.2)]
             self.flight(contact, target, 0.88 - plan['intensity'] * 0.12,
@@ -77,15 +84,23 @@ class Match:
                 reason = 'wide'
                 break
             contact = [x * 1.05, 1.05, -side * 12.0]
-            self.flight(target, contact, 0.42, 'rebound', 1-hitter)
-            hitter = 1-hitter
-        else:
-            # Receiver cannot reach the last legal ball; second bounce ends point.
-            landing = [contact[0], 0.034, contact[2] + (-2 if hitter == 1 else 2)]
-            self.flight(contact, landing, 0.44, 'unreached', hitter)
-            self.emit('bounce', position=landing)
-            winner = 1-hitter
-            reason = 'second_bounce'
+            receiver = 1-hitter
+            desired = [contact[0]-0.55, 0, contact[2]-0.4*side]
+            distance = sum((desired[i]-self.positions[receiver][i])**2 for i in (0, 2))**0.5
+            capacity = self.profiles[receiver]
+            speed = (4 + capacity['speed']/30) * (0.7 + self.plans[receiver]['intensity']*0.5) * (1-capacity['fatigue']/250)
+            available = (0.88-plan['intensity']*0.12)+0.42
+            if distance > speed*available:
+                self.flight(target, contact, 0.42, 'rebound', receiver)
+                landing = [contact[0], 0.034, contact[2]-side*2]
+                self.flight(contact, landing, 0.44, 'unreached', receiver)
+                self.emit('bounce', position=landing)
+                winner, reason = hitter, 'second_bounce'
+                break
+            self.flight(target, contact, 0.42, 'rebound', receiver)
+            self.positions[receiver] = desired
+            hitter = receiver
+            stroke += 1
         self.award(winner, reason)
         self.time += 2.5
 

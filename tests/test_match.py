@@ -37,3 +37,27 @@ class MatchTests(unittest.TestCase):
                 self.assertAlmostEqual(end, event['end'][axis])
         self.assertTrue(any(e['kind'] == 'serve' for e in m.events))
         self.assertTrue(any(e['kind'] == 'return' for e in m.events))
+
+    def test_tiebreak_service_order_and_two_point_margin(self):
+        m = Match()
+        m.tie_points = [0, 0]
+        m.tie_first_server = 0
+        m.award(0, 'test')
+        self.assertEqual(m.server, 1)
+        m.award(1, 'test')
+        self.assertEqual(m.server, 1)
+        m.award(0, 'test')
+        self.assertEqual(m.server, 0)
+        m.tie_points = [6, 6]
+        m.award(0, 'test')
+        self.assertEqual(m.sets, [0, 0])
+        m.award(0, 'test')
+        self.assertEqual(m.sets, [1, 0])
+        self.assertIsNone(m.tie_points)
+
+    def test_ability_changes_simulation_without_ranking_input(self):
+        baseline, tired = Match(), Match()
+        tired.profiles[0]['fatigue'] = 95
+        baseline.next_game()
+        tired.next_game()
+        self.assertNotEqual(baseline.events, tired.events)
