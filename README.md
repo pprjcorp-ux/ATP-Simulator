@@ -4,6 +4,12 @@ Jogo gratuito de gestão de carreira de tênis para **Windows e macOS**, em dese
 
 Crie um profissional com nível técnico de Challenger, conquiste sua posição pelos resultados e administre a carreira para disputar o **número 1 do ranking mundial compartilhado**. Acompanhe partidas em **3D realista**, com câmera de transmissão, e ajuste intensidade e instruções táticas **entre os games**. Os tenistas executam os golpes automaticamente.
 
+## MVP local para teste
+
+A prioridade atual é um app para **macOS com Apple Silicon**, com sessão local automática, criação do atleta, preparação, partida 3D e save no computador. Não exige instalar Python ou Godot. Veja o [guia de instalação e jogo](docs/MVP_LOCAL.md). O pacote experimental é entregue neste chat; o código e o empacotamento estão no repositório.
+
+O usuário aceitou partidas de aproximadamente uma hora e adiou circuito público, autenticação e deploy até testar e ajustar este MVP. A experiência mundial online continua no objetivo final.
+
 ## Direção confirmada
 
 - Calendário e adversários reais; atleta do jogador criado.
@@ -31,9 +37,9 @@ Crie um profissional com nível técnico de Challenger, conquiste sua posição 
 
 ## Estado do projeto
 
-**Pré-produção.** Este repositório contém decisões de produto e preparação para a implementação. Ainda não há uma versão jogável, engine selecionada, dependências de jogo, build ou testes de execução.
+**Implementação inicial na nuvem.** Godot 4.6.3 com cena 3D conectada a uma autoridade Python/SQLite. A fundação possui testes de placar, persistência e prazos; ainda não atende ao primeiro recorte completo nem à qualidade visual aprovada. Consulte [execução e limites](docs/IMPLEMENTATION.md) e [evidências por plataforma](docs/validation/2026-11-09.md).
 
-A implementação começará em um **ambiente de nuvem**. A preparação local está limitada à documentação e à organização do repositório. Exportar um executável futuramente não substituirá a validação da partida em 3D e da carreira em cada sistema operacional suportado.
+A implementação está em um **ambiente de nuvem**. A preparação local está limitada à documentação e à organização do repositório. Exportar um executável futuramente não substituirá a validação da partida em 3D e da carreira em cada sistema operacional suportado.
 
 ## Documentação
 
@@ -45,6 +51,6 @@ A implementação começará em um **ambiente de nuvem**. A preparação local e
 
 ## Próximos passos
 
-O usuário aprovou o escopo V1 em 9 de novembro de 2026 e autorizou concluir o ambiente e abrir o chat de desenvolvimento na nuvem. Selecionar a engine e a infraestrutura com base na experiência pretendida e na exportação para Windows e macOS. Valores de balanceamento e referências de qualidade serão refinados com o protótipo.
+O escopo V1 foi aprovado em 9 de novembro de 2026. A engine está fixada em Godot 4.6.3; a autoridade de desenvolvimento usa Python/SQLite. Próximas entregas: contato e animação humana, ritmo de 10–15 minutos, chaves de acesso com capacidade válida, dados oficiais e ranking, temporadas completas e execução real em Windows/macOS. O PR inicial é uma fundação em desenvolvimento, sem encerrar o objetivo do jogo.
 
 O nome do projeto é provisório. O uso de dados, marcas e materiais visuais será documentado conforme as fontes forem selecionadas.

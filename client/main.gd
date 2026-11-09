@@ -1,0 +1,197 @@
+extends Node3D
+
+var request := HTTPRequest.new()
+var events: Array = []
+var live_time := 0.0
+var poll_elapsed := 0.0
+var connected := false
+var ball: MeshInstance3D
+var players: Array[Node3D] = []
+var rackets: Array[Node3D] = []
+var score := Label.new()
+var status := Label.new()
+var official_time := 0.0
+var fixture := ""
+var cursor := -1
+var replay_mode := false
+var replay_rate := 1.0
+var career_panel: PanelContainer
+
+func material(color: Color) -> StandardMaterial3D:
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = color
+	mat.roughness = 0.8
+	return mat
+
+func box(parent: Node3D, size: Vector3, pos: Vector3, color: Color) -> MeshInstance3D:
+	var mesh := MeshInstance3D.new()
+	var shape := BoxMesh.new()
+	shape.size = size
+	mesh.mesh = shape
+	mesh.material_override = material(color)
+	mesh.position = pos
+	parent.add_child(mesh)
+	return mesh
+
+func sphere(parent: Node3D, radius: float, pos: Vector3, color: Color) -> MeshInstance3D:
+	var mesh := MeshInstance3D.new()
+	var shape := SphereMesh.new()
+	shape.radius = radius
+	shape.height = radius * 2
+	mesh.mesh = shape
+	mesh.material_override = material(color)
+	mesh.position = pos
+	parent.add_child(mesh)
+	return mesh
+
+func vector(value: Array) -> Vector3:
+	return Vector3(value[0], value[1], value[2])
+
+func _ready() -> void:
+	box(self, Vector3(34, 0.2, 48), Vector3(0, -0.15, 0), Color("234c47"))
+	box(self, Vector3(10.97, 0.04, 23.77), Vector3.ZERO, Color("367faa"))
+	for x in [-5.485, -4.115, 4.115, 5.485]:
+		box(self, Vector3(0.045, 0.02, 23.77), Vector3(x, 0.035, 0), Color.WHITE)
+	for z in [-11.885, -6.4, 6.4, 11.885]:
+		box(self, Vector3(8.23 if abs(z) < 7 else 10.97, 0.02, 0.045), Vector3(0, 0.035, z), Color.WHITE)
+	box(self, Vector3(0.045, 0.02, 12.8), Vector3(0, 0.035, 0), Color.WHITE)
+	for x in [-5.8, 5.8]:
+		box(self, Vector3(0.12, 1.07, 0.12), Vector3(x, 0.535, 0), Color("dddddd"))
+	for x in range(-57, 58):
+		box(self, Vector3(0.012, 0.91, 0.012), Vector3(x * 0.1, 0.46, 0), Color("233039"))
+	for y in range(1, 10):
+		box(self, Vector3(11.6, 0.012, 0.012), Vector3(0, y * 0.1, 0), Color("233039"))
+	box(self, Vector3(11.6, 0.045, 0.045), Vector3(0, 0.94, 0), Color.WHITE)
+	for index in range(2):
+		var player := Node3D.new()
+		player.set_script(preload("res://player_avatar.gd"))
+		add_child(player)
+		player.configure(Color("f6b343") if index == 0 else Color("eff5f6"), 1.0 if index == 0 else -1.0)
+		player.position = Vector3(1.5 if index == 0 else -1.5, 0, 12.5 if index == 0 else -12.5)
+		players.append(player)
+	ball = sphere(self, 0.067, Vector3(0, 1, 0), Color("e7ff54"))
+	var camera := Camera3D.new()
+	add_child(camera)
+	camera.position = Vector3(4, 24, 34)
+	camera.h_offset = 6
+	camera.look_at(Vector3(0, 0, 0))
+	camera.fov = 48
+	var light := DirectionalLight3D.new()
+	light.rotation_degrees = Vector3(-60, -25, 0)
+	light.light_energy = 1.4
+	add_child(light)
+	var environment := WorldEnvironment.new()
+	environment.environment = Environment.new()
+	environment.environment.background_mode = Environment.BG_COLOR
+	environment.environment.background_color = Color("162632")
+	environment.environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
+	environment.environment.ambient_light_color = Color("d9e9fa")
+	environment.environment.ambient_light_energy = 0.65
+	add_child(environment)
+	var layer := CanvasLayer.new()
+	add_child(layer)
+	score.position = Vector2(32, 26)
+	score.add_theme_font_size_override("font_size", 25)
+	layer.add_child(score)
+	status.position = Vector2(32, 710)
+	status.add_theme_font_size_override("font_size", 18)
+	layer.add_child(status)
+	var replay := Button.new()
+	replay.position = Vector2(32, 160)
+	replay.text = "Replay"
+	replay.pressed.connect(func(): replay_mode = true; live_time = 0.0)
+	layer.add_child(replay)
+	var live := Button.new()
+	live.position = Vector2(120, 160)
+	live.text = "Ao vivo / Live / En vivo"
+	live.pressed.connect(func(): replay_mode = false; live_time = maxf(0, official_time - 2.0))
+	layer.add_child(live)
+	var speed := OptionButton.new()
+	speed.position = Vector2(335, 160)
+	for label in ["Pausa / Pause", "0.5×", "1×", "2×", "4×"]:
+		speed.add_item(label)
+	speed.select(2)
+	speed.item_selected.connect(func(index): replay_rate = [0.0, 0.5, 1.0, 2.0, 4.0][index])
+	layer.add_child(speed)
+	career_panel = PanelContainer.new()
+	career_panel.set_script(preload("res://career_panel.gd"))
+	layer.add_child(career_panel)
+	add_child(request)
+	request.request_completed.connect(received)
+	poll()
+
+func poll() -> void:
+	if not Session.url.is_empty():
+		request.request(Session.url + "/match?after=%d" % cursor, Session.headers)
+
+func received(result: int, code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
+	if result != HTTPRequest.RESULT_SUCCESS or code != 200:
+		connected = false
+		status.text = "Reconectando ao servidor…"
+		return
+	var data = JSON.parse_string(body.get_string_from_utf8())
+	if not data is Dictionary:
+		return
+	if fixture != str(data.fixture):
+		fixture = str(data.fixture)
+		events.clear()
+		cursor = -1
+		replay_mode = false
+		return
+	events.append_array(data.events)
+	cursor = int(data.last_seq)
+	official_time = float(data.elapsed)
+	# Two-second presentation buffer; never requests or displays future events.
+	if not replay_mode:
+		live_time = maxf(0, float(data.elapsed) - 2.0)
+	connected = true
+
+func _process(delta: float) -> void:
+	poll_elapsed += delta
+	if poll_elapsed >= 0.5:
+		poll_elapsed = 0
+		if request.get_http_client_status() == HTTPClient.STATUS_DISCONNECTED:
+			poll()
+	if not connected:
+		score.text = "ATP SIMULATOR • MVP LOCAL"
+		status.text = Session.failure if not Session.failure.is_empty() else "Iniciando sessão local…"
+		return
+	official_time += delta
+	var play_delta := delta * (replay_rate if replay_mode else 1.0)
+	live_time += play_delta
+	live_time = minf(live_time, maxf(0, official_time - 2.0))
+	career_panel.update_window(events, official_time, fixture)
+	var current: Dictionary = {}
+	for event in events:
+		if float(event.at) > live_time:
+			break
+		current = event
+	if current.is_empty():
+		score.text = "ATP SIMULATOR • MVP LOCAL"
+		status.text = "Crie seu atleta, prepare a semana e clique em Jogar partida de acesso."
+		return
+	score.text = "ACESSO • MVP LOCAL 2027\nA   %d sets   %d games   %s\nB   %d sets   %d games   %s" % [current.sets[0], current.games[0], point_label(current.points, 0), current.sets[1], current.games[1], point_label(current.points, 1)]
+	status.text = "%s  •  %s\nAtletas fictícios • ambiente de desenvolvimento • sem pontos ATP" % ["REPLAY" if replay_mode else "AO VIVO", event_label(str(current.kind))]
+	if current.has("tiebreak"):
+		score.text += "\nTie-break  %d–%d" % current.tiebreak
+	if current.has("velocity"):
+		var t := clampf(live_time - float(current.at), 0, float(current.duration))
+		ball.position = vector(current.start) + vector(current.velocity) * t + Vector3(0, -4.905 * t * t, 0)
+		for index in range(2):
+			var start := vector(current.positions[index])
+			var goal := vector(current.move_targets[index])
+			var travel := start.distance_to(goal)
+			players[index].position = start.lerp(goal, clampf(t / float(current.duration), 0, 1))
+			var contact := Vector3(0.5, 1.05, -0.1 if index == 0 else 0.1)
+			if int(current.player) == index and current.kind in ["serve", "return", "stroke"]:
+				var strike := vector(current.start) - players[index].position
+				contact = strike.lerp(contact, clampf(t/0.3, 0, 1))
+			players[index].pose(live_time, minf(1, travel), contact)
+
+func point_label(points: Array, index: int) -> String:
+	if mini(points[0], points[1]) >= 3:
+		return "AD" if points[index] > points[1-index] else "40"
+	return str([0, 15, 30, 40][mini(int(points[index]), 3)])
+
+func event_label(kind: String) -> String:
+	return {"toss": "Preparação do saque", "serve": "Saque", "return": "Devolução", "stroke": "Troca de bola", "rebound": "Após o quique", "bounce": "Quique", "point": "Ponto", "game": "Game", "set": "Set", "finished": "Partida encerrada", "instruction_window": "Intervalo — oriente seu atleta", "serve_fault": "Falta no saque", "unreached": "Bola não alcançada", "ready": "Preparação", "tiebreak_start": "Início do tie-break", "tiebreak_point": "Ponto do tie-break"}.get(kind, kind)

@@ -4,4 +4,7 @@
 !.env.example
 *.log
 .cache/
+.godot/
+__pycache__/
+*.sqlite3
 artifacts/
