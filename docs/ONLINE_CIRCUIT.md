@@ -10,18 +10,19 @@
 - Tenistas reais envelhecem e se aposentam; novos talentos fictícios renovam o circuito.
 - Distribuição gratuita, em português, inglês e espanhol.
 - Gestão com máximo detalhe e simulação dura; alcançar o número 1 não é garantido.
+- Início com nível técnico de Challenger; a classificação é conquistada pelos resultados.
+- Uma semana do jogo por dia real, aproximadamente 52 dias por temporada.
+- Circuito de acesso próprio do jogo, com torneios abertos que dão vagas, preservando o calendário real de ATP e Challenger.
 
-## Decisões que precisam ser conciliadas
+## Entrada e ritmo do mundo
 
-### Entrada perto do top 300
+### Entrada no ranking
 
-Começar perto do top 300 foi confirmado antes da escolha do mundo único. Garantir essa faixa a todo novo usuário entra em conflito com a população crescente de um ranking comum.
-
-Proposta apresentada ao usuário: manter o nível técnico de um profissional de Challenger e fazer a posição efetiva depender dos resultados. As alternativas em discussão são limitar vagas humanas ou buscar outra solução. Não implementar uma mudança silenciosa no início da carreira.
+O usuário optou por manter o nível técnico de um profissional de Challenger e conquistar a classificação pelos resultados. Essa escolha substitui a proposta inicial de garantir entrada perto do top 300. A criação de um atleta não deve inserir pontos fictícios no ranking como se tivessem sido conquistados em torneios reais.
 
 ### Velocidade do calendário
 
-Ainda em decisão: uma semana do jogo por dia real, por três dias reais ou calendário em tempo real. A duração da temporada influencia a rotina, as viagens, o ritmo de envelhecimento e quantas partidas um usuário precisa preparar por dia.
+O mundo avança uma semana do jogo por dia real, com temporada de aproximadamente 52 dias. Datas, duração dos eventos e períodos de recuperação seguem o calendário simulado. A programação das partidas apresenta prazos e horários reais ao usuário, convertidos para seu fuso.
 
 ### Acompanhamento e velocidade de reprodução
 
@@ -49,11 +50,13 @@ A agenda exibe horários no fuso do usuário. O circuito deve considerar disponi
 
 Esses pontos definem comportamento esperado. Nenhum backend, serviço de autenticação, fornecedor de hospedagem ou orçamento operacional foi escolhido.
 
-## Capacidade do circuito — pendência
+## Circuito de acesso
 
-O calendário real tem limites de vagas por evento. Precisamos definir como a base crescente de usuários entra em torneios e qualifying, o que acontece com quem fica fora das listas e como evitar que um usuário passe muito tempo sem conseguir competir.
+O usuário aprovou um circuito de acesso próprio do jogo, com torneios abertos que concedem vagas, mantendo o calendário real de ATP e Challenger. Esse circuito oferece uma rota de competição a quem ainda não tem classificação suficiente.
 
-Não aumentar chaves, inventar eventos ou dar convites ilimitados e apresentar essas mudanças como regulamento oficial. Qualquer adaptação de jogo precisa ser deliberada e identificada.
+Proposta de regra: os eventos de acesso concedem vagas para as etapas de entrada do circuito virtual, sem conceder diretamente pontos apresentados como ATP. Quantidade, validade, destino e condições das vagas serão calibrados. As premiações, se adotadas, fazem parte da economia do jogo.
+
+O circuito de acesso e suas vagas são adaptações do jogo e devem ser identificados assim. Não inventar eventos e apresentá-los como calendário oficial. As vagas precisam corresponder a capacidade real nas chaves da simulação; uma premiação não pode prometer a mesma vaga a dois atletas.
 
 ## Evolução entre temporadas — proposta
 

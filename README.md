@@ -2,7 +2,7 @@
 
 Jogo gratuito de gestão de carreira de tênis para **Windows e macOS**, em desenvolvimento colaborativo, com **um circuito online mundial compartilhado**.
 
-Crie um profissional, comece sua jornada pelo nível Challenger e administre sua carreira para disputar o **número 1 do ranking mundial compartilhado**. Acompanhe partidas em **3D realista**, com câmera de transmissão, e ajuste intensidade e instruções táticas **entre os games**. Os tenistas executam os golpes automaticamente. A regra de entrada no ranking está em discussão para conciliar a proposta inicial de começar perto do top 300 com o mundo online único.
+Crie um profissional com nível técnico de Challenger, conquiste sua posição pelos resultados e administre a carreira para disputar o **número 1 do ranking mundial compartilhado**. Acompanhe partidas em **3D realista**, com câmera de transmissão, e ajuste intensidade e instruções táticas **entre os games**. Os tenistas executam os golpes automaticamente.
 
 ## Direção confirmada
 
@@ -17,6 +17,10 @@ Crie um profissional, comece sua jornada pelo nível Challenger e administre sua
 - Partidas acompanhadas em aproximadamente 10–15 minutos, com velocidade ajustável.
 - Gestão com máximo detalhe: treinos, finanças, equipe, viagens e equipamentos.
 - Apoio financeiro inicial limitado para planejar a primeira temporada.
+- Uma semana do jogo por dia real: aproximadamente 52 dias por temporada.
+- Criação completa do atleta, com distribuição de atributos dentro de um orçamento equilibrado para todos.
+- Circuito de acesso próprio do jogo, com torneios abertos que concedem vagas; ATP e Challenger mantêm seu calendário real.
+- Ao terminar uma carreira, é possível criar outro atleta com novo orçamento inicial, preservando a carreira anterior no histórico.
 - Distribuição do tempo entre academia, quadra e recuperação.
 - Foco técnico em movimentos e fundamentos específicos.
 - Escolha de torneios e períodos de descanso.
@@ -33,6 +37,7 @@ A implementação começará em um **ambiente de nuvem**. A preparação local e
 
 ## Documentação
 
+- [Proposta consolidada da primeira versão](docs/V1_SCOPE.md)
 - [Visão e decisões de produto](docs/GAME_DESIGN.md)
 - [Proposta dos sistemas de carreira](docs/CAREER_SYSTEMS.md)
 - [Circuito mundial online](docs/ONLINE_CIRCUIT.md)
@@ -40,6 +45,6 @@ A implementação começará em um **ambiente de nuvem**. A preparação local e
 
 ## Próximas decisões
 
-Concluir o desenho do jogo com o usuário: entrada no ranking mundial, velocidade do calendário, perfil e orçamento exatos do atleta e referências de qualidade visual. Depois, iniciar o chat de desenvolvimento na nuvem e selecionar a engine e a infraestrutura com base na experiência pretendida e na exportação para Windows e macOS.
+Revisar a proposta consolidada da primeira versão com o usuário. Depois da aprovação, iniciar o chat de desenvolvimento na nuvem e selecionar a engine e a infraestrutura com base na experiência pretendida e na exportação para Windows e macOS. Valores de balanceamento e referências de qualidade serão refinados com o protótipo.
 
 O nome do projeto é provisório. O uso de dados, marcas e materiais visuais será documentado conforme as fontes forem selecionadas.

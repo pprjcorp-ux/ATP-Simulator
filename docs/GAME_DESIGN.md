@@ -22,10 +22,14 @@ Repositório escolhido pelo usuário: https://github.com/pprjcorp-ux/ATP-Simulat
 | Partidas entre humanos | Horários agendados pelo circuito; orientação ao vivo e plano tático automático para ausências. |
 | Idiomas iniciais | Português, inglês e espanhol. |
 | Partidas | 3D realista, com proporções, movimentos e câmera próximos de uma transmissão de TV. |
-| Carreira inicial | Criar um profissional no Challenger, perto do top 300. |
+| Carreira inicial | Criar um profissional com nível técnico de Challenger; a posição no ranking é conquistada pelos resultados. |
+| Criação do atleta | Personalização completa e distribuição de atributos dentro de um orçamento equilibrado para todos. |
+| Fim de carreira | Novo atleta com novo orçamento inicial; a carreira anterior permanece no histórico. |
+| Acesso à competição | Circuito de acesso próprio do jogo, com torneios abertos que dão vagas; manter o calendário real de ATP e Challenger. |
 | Mundo | Calendário e adversários reais, com o atleta do jogador criado. |
 | Renovação do circuito | Tenistas reais envelhecem e se aposentam; novos talentos fictícios entram no circuito. |
 | Temporada inicial | 2027. |
+| Velocidade do mundo | Uma semana do jogo por dia real, aproximadamente 52 dias por temporada. |
 | Ritmo de acompanhamento | Partida comum em aproximadamente 10–15 minutos, com opção de mudar a velocidade. |
 | Condição financeira inicial | Apoio limitado: reserva ou patrocinador que permita planejar a primeira temporada. |
 | Controle dos golpes | Automático; o jogador assiste à partida. |
@@ -42,7 +46,7 @@ Repositório escolhido pelo usuário: https://github.com/pprjcorp-ux/ATP-Simulat
 
 O usuário decidiu terminar o desenho do jogo nesta conversa antes de abrir o chat de desenvolvimento na nuvem. Preparar um ambiente não equivale a autorizar o início da implementação enquanto essa etapa de decisões continua aberta.
 
-**Compatibilidade ainda em discussão:** começar perto do top 300 foi uma escolha anterior. A escolha posterior de um único ranking mundial exige definir como novos atletas entram sem garantir a mesma faixa limitada a um número ilimitado de pessoas. A proposta é preservar nível técnico de Challenger e conquistar a posição pelos resultados, mas essa mudança ainda depende da resposta do usuário.
+A proposta consolidada para revisão está em [V1_SCOPE.md](V1_SCOPE.md). A posição inicial perto do top 300 foi substituída, por decisão do usuário, pelo nível técnico de Challenger com classificação conquistada por resultados.
 
 ## Proposta de ciclo de jogo — para discussão
 
@@ -81,11 +85,11 @@ A quadra 3D deve representar os eventos produzidos pela simulação: movimentaç
 
 Dados de atletas, equipamentos, calendários e regras devem ser identificados por temporada e origem. Adversários reais exigem um ponto de partida datado; as temporadas seguintes passam a ser consequências da simulação.
 
-A engine, o desempenho alvo e os formatos de distribuição ainda estão em aberto. A direção visual confirmada é realista, e as plataformas iniciais são Windows e macOS. Nenhuma dependência de implementação foi instalada.
+A engine, o desempenho alvo e os formatos de distribuição ainda estão em aberto. A direção visual confirmada é realista, e as plataformas iniciais são Windows e macOS. O repositório contém apenas documentação, sem dependências ou código do jogo.
 
 ## Primeiro recorte jogável proposto
 
-Um trecho de carreira no Challenger que já conecte treino, descanso, torneio, intensidade, equipamento, uma proposta de patrocínio, partida 3D e atualização do ranking. Esse recorte serve para testar o ciclo completo; não substitui o objetivo final de uma carreira até o número 1.
+Uma semana do mundo, com um grupo pequeno de teste, que já conecte criação do atleta, treino, descanso, evento de acesso, intensidade, equipamento, uma proposta de patrocínio, partida 3D e atualização do ranking nos eventos pontuáveis. O detalhamento está em [V1_SCOPE.md](V1_SCOPE.md). Esse recorte serve para testar o ciclo completo; não substitui o objetivo final de uma carreira até o número 1.
 
 Aprovar um protótipo requer observar uma partida real da simulação, com golpes e placar coerentes, e verificar efeitos das decisões sobre evolução, desempenho e desgaste. Também é necessário persistir e retomar a carreira sem perder o estado oficial do circuito. Com o modo online confirmado, o recorte deve demonstrar dois participantes na mesma partida e a execução do plano de ausência.
 
@@ -96,11 +100,11 @@ Ainda não há aprovação do tamanho desse recorte ou da qualidade visual inici
 - Referências concretas de qualidade visual e animação para a direção realista escolhida.
 - Data exata de início em 2027, elenco real e histórico inicial de pontos, com versões e datas das fontes.
 - Comportamento da aceleração e dos melhores momentos dentro do ritmo de 10–15 minutos escolhido.
-- Idade, orçamento e personalização do atleta inicial.
+- Faixas de idade, limites dos atributos e valor exato do apoio financeiro, como parâmetros de balanceamento da criação completa já confirmada.
 - Dimensões do treino, equipe, economia e configuração de cordas.
 - Tratamento de marcas reais e conteúdo visual antes da distribuição pública gratuita.
-- Escopo do primeiro recorte jogável e critérios de aceitação.
-- Entrada de novos atletas no ranking mundial e velocidade do calendário compartilhado.
+- Revisão final do primeiro recorte jogável e seus critérios de aceitação em V1_SCOPE.md.
+- Quantidade de vagas e regras detalhadas do circuito de acesso confirmado.
 - Disponibilidade para partidas agendadas, plano de ausência e funcionamento da velocidade de reprodução durante jogos ao vivo.
 
 As propostas detalhadas estão em [CAREER_SYSTEMS.md](CAREER_SYSTEMS.md). Elas não devem ser promovidas a decisões confirmadas sem a conversa correspondente.

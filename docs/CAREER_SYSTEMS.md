@@ -6,7 +6,7 @@ Também estão confirmados: distribuição gratuita, simulação dura, circuito 
 
 ## A unidade de decisão
 
-Proposta: uma agenda diária dentro de um planejamento semanal. O jogador vê os próximos torneios e compromissos e distribui tempo de treino e recuperação. Como o circuito é online e compartilhado, o tempo do mundo avança para todos, com prazos comuns; o usuário não pode pausar o calendário dos adversários. A velocidade desse calendário ainda está em decisão.
+Proposta: uma agenda diária dentro de um planejamento semanal. O jogador vê os próximos torneios e compromissos e distribui tempo de treino e recuperação. Como o circuito é online e compartilhado, o tempo do mundo avança para todos, com prazos comuns; o usuário não pode pausar o calendário dos adversários. A velocidade confirmada é uma semana do jogo por dia real, aproximadamente 52 dias por temporada.
 
 Horários de partidas e viagens ocupam tempo real na agenda do jogo. Uma eliminação precoce libera dias que podem ser usados para treinar, recuperar ou viajar. Um avanço inesperado no torneio exige revisar o plano da semana seguinte.
 
@@ -29,9 +29,9 @@ Não somar horas ilimitadas nem premiar um único exercício para sempre. Propos
 
 ## Identidade do atleta
 
-Proposta: o jogador define nome, nacionalidade, aparência, idade inicial, mão dominante, backhand de uma ou duas mãos e orientação inicial de estilo. Características físicas e técnicas têm contrapartidas, e não apenas vantagens cumulativas.
+Está confirmada a personalização completa, com distribuição de atributos dentro de um orçamento equilibrado para todos. Proposta de campos: nome, nacionalidade, aparência, idade inicial, características físicas, mão dominante, backhand de uma ou duas mãos e orientação inicial de estilo. Características físicas e técnicas têm contrapartidas, e não apenas vantagens cumulativas.
 
-As possibilidades de criação, os limites dos atributos e o papel de um potencial de evolução ainda precisam ser aprovados. Não introduzir um teto oculto que torne o objetivo impossível sem explicação ao jogador.
+Faixas de idade, limites dos atributos e o papel de um potencial de evolução serão calibrados e revisados no protótipo. Não introduzir um teto oculto que torne o objetivo impossível sem explicação ao jogador.
 
 ## Dois controles diferentes na partida
 
@@ -80,6 +80,8 @@ Uma proposta de patrocínio apresenta duração, valor fixo, bônus, exclusivida
 
 O fluxo de caixa distingue saldo disponível, receitas previstas e obrigações futuras. Uma boa premiação não deve esconder salários ou viagens já contratados. A regra para dificuldades financeiras e eventual fim de carreira ainda será definida.
 
+Está confirmado que uma carreira encerrada permite criar outro atleta com novo orçamento inicial, preservando a carreira anterior no histórico. A proposta de herdar dinheiro, equipe e estrutura não foi escolhida.
+
 ## Calendário e ranking
 
 A intenção é usar o calendário real de 2027 e suas revisões verificadas. Inscrição, entrada direta, qualifying, convites, lista de espera e desistências devem respeitar os dados e regulamentos aplicáveis.
@@ -114,9 +116,9 @@ A carreira guarda títulos, campanhas, melhores posições, confrontos diretos e
 
 ## Pontos ainda abertos
 
-- Nível de personalização e idade do atleta inicial.
+- Faixas de idade e limites dos atributos na criação completa.
 - Composição e duração do apoio financeiro inicial.
-- Entrada no ranking mundial, velocidade do calendário e regras de disponibilidade para partidas.
-- Condições de encerramento da carreira e criação de um novo atleta.
+- Regras de disponibilidade para partidas e quantidade de vagas do circuito de acesso.
+- Condições exatas de encerramento da carreira; o recomeço com novo atleta já está confirmado.
 - Referências visuais e produção de modelos e animações.
 - Escopo e critérios do primeiro recorte jogável.

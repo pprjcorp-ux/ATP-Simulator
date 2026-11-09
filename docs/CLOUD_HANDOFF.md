@@ -4,7 +4,7 @@
 
 O usuário determinou que a implementação do jogo comece na nuvem. A etapa local prepara o produto e o repositório. Este documento não comprova uma migração: é necessário observar um ambiente executável, um checkout correto e comandos executados nesse ambiente.
 
-**Direção atual:** terminar as decisões de jogo na conversa de desenho antes de abrir o chat de desenvolvimento na nuvem. Uma configuração de ambiente pode estar em preparação, mas isso não autoriza iniciar o código do jogo antes de concluir essa etapa com o usuário.
+**Direção atual:** as decisões estruturais foram consolidadas em [V1_SCOPE.md](V1_SCOPE.md), que aguarda a revisão final do usuário antes de abrir o chat de desenvolvimento na nuvem. Uma configuração de ambiente pode estar em preparação, mas isso não autoriza iniciar o código do jogo antes de concluir essa etapa com o usuário.
 
 Repositório: https://github.com/pprjcorp-ux/ATP-Simulator
 
@@ -14,7 +14,7 @@ Ler primeiro [GAME_DESIGN.md](GAME_DESIGN.md). As decisões já respondidas pelo
 
 1. Jogo para Windows e macOS desde a primeira versão.
 2. Partidas 3D realistas, com proporções, movimentos e câmera próximos de uma transmissão de TV.
-3. Atleta criado começando no Challenger, perto do top 300.
+3. Atleta criado com nível técnico de Challenger; a posição efetiva no ranking é conquistada pelos resultados.
 4. Calendário e adversários reais.
 5. Golpes automáticos; o jogador dá instruções táticas e altera intensidade entre games.
 6. Gestão no máximo detalhe: treinos, finanças, equipe, viagens e equipamentos.
@@ -28,8 +28,12 @@ Ler primeiro [GAME_DESIGN.md](GAME_DESIGN.md). As decisões já respondidas pelo
 14. Partidas agendadas pelo circuito, com orientações ao vivo e plano tático automático para ausências.
 15. Português, inglês e espanhol na primeira versão pública.
 16. Tenistas reais envelhecem e se aposentam; novos talentos fictícios entram no circuito.
+17. Uma semana do jogo por dia real, aproximadamente 52 dias por temporada.
+18. Personalização completa e distribuição de atributos dentro de um orçamento equilibrado para todos.
+19. Ao terminar uma carreira, criar outro atleta com novo orçamento inicial e preservar o histórico anterior.
+20. Circuito de acesso próprio do jogo, com torneios abertos que concedem vagas; manter o calendário real de ATP e Challenger.
 
-A entrada inicial perto do top 300 está sendo revista com o usuário para compatibilidade com o ranking mundial único. Não decidir esse conflito silenciosamente. Consultar [ONLINE_CIRCUIT.md](ONLINE_CIRCUIT.md) para o desenho online e as decisões pendentes.
+A decisão atual de entrada substitui a proposta anterior de garantir uma posição perto do top 300. Consultar [ONLINE_CIRCUIT.md](ONLINE_CIRCUIT.md) para as regras do mundo compartilhado e [V1_SCOPE.md](V1_SCOPE.md) para a sequência de implementação proposta.
 
 Uma interface de gestão isolada, uma partida apenas textual ou um demonstrador 2D não atendem à direção confirmada. O primeiro recorte deve caminhar para a carreira completa até o número 1; um protótipo não encerra o objetivo.
 
@@ -55,9 +59,9 @@ Uma interface de gestão isolada, uma partida apenas textual ou um demonstrador 
 
 As camadas devem se conectar de forma observável. A trajetória da bola, o contato com a raquete, o resultado dos pontos e o placar precisam ser coerentes. A aceleração de uma partida não pode alterar suas regras ou favorecer um atleta.
 
-## Próximo recorte a discutir com o usuário
+## Primeiro recorte proposto para revisão final
 
-Proposta: um trecho jogável no Challenger com agenda, treino, descanso, viagem, equipamento, finanças, uma proposta de patrocínio, torneio e partida 3D. Incluir orientações entre games, pós-jogo, atualização do ranking, persistência e retomada de sessão. Demonstrar também a partida entre dois participantes e a execução de um plano de ausência.
+Proposta: uma semana do mundo com um grupo pequeno de teste, conforme [V1_SCOPE.md](V1_SCOPE.md). Conectar criação do atleta, agenda, treino, descanso, viagem, equipamento, finanças, uma proposta de patrocínio, evento de acesso e partida 3D. Incluir orientações entre games, pós-jogo, atualização do ranking nos eventos pontuáveis, persistência e retomada de sessão. Demonstrar também a partida entre dois participantes e a execução de um plano de ausência.
 
 Fora desse recorte inicial, mas dentro do objetivo final: circuito e temporadas completos, variedade de contratos e equipe, progressão de longo prazo, manutenção de todos os adversários, regras de ranking e elegibilidade da temporada escolhida e qualidade visual consistente.
 
