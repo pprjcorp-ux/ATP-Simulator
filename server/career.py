@@ -67,8 +67,6 @@ def command(db, body, world_week):
             raise ValueError('invalid name or attribute budget')
         data.update(name=name.strip(), attributes=attrs, customized=True)
     elif action == 'plan_week':
-        if data.get('planned_week') == world_week:
-            raise ValueError('week already planned')
         gym, court, recovery = (body.get(x) for x in ('gym', 'court', 'recovery'))
         if any(type(x) is not int or x < 0 for x in (gym, court, recovery)) or gym+court+recovery != 24:
             raise ValueError('allocate exactly 24 weekly hours')

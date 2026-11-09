@@ -11,14 +11,21 @@ def tuples(value):
 
 
 class World:
-    def __init__(self, path, clock=time.time):
-        self.clock = clock
+    def __init__(self, path, clock=time.time, sandbox=False):
+        self.sandbox = sandbox
+        self.base_clock = clock
+        self.offset = 0.0
+        self.clock = lambda: self.base_clock() + self.offset
         self.db = sqlite3.connect(path, check_same_thread=False)
         self.db.execute('CREATE TABLE IF NOT EXISTS world (id INTEGER PRIMARY KEY, state TEXT)')
         self.db.execute('CREATE TABLE IF NOT EXISTS commands (id TEXT PRIMARY KEY, body TEXT, response TEXT)')
         career.bootstrap(self.db)
         self.db.execute('CREATE TABLE IF NOT EXISTS clock (id INTEGER PRIMARY KEY, epoch REAL, week INTEGER)')
         self.db.execute('INSERT OR IGNORE INTO clock VALUES (1, ?, 0)', (clock(),))
+        self.db.execute('CREATE TABLE IF NOT EXISTS sandbox_clock (id INTEGER PRIMARY KEY, offset REAL)')
+        self.db.execute('INSERT OR IGNORE INTO sandbox_clock VALUES (1, 0)')
+        if sandbox:
+            self.offset = self.db.execute('SELECT offset FROM sandbox_clock WHERE id=1').fetchone()[0]
         self.db.commit()
         row = self.db.execute('SELECT state FROM world WHERE id=1').fetchone()
         self.match = Match()
@@ -30,7 +37,7 @@ class World:
             self.match.rng.setstate(tuples(state.pop('rng')))
             self.match.__dict__.update(state)
         else:
-            self.started = clock() + 60
+            self.started = self.clock() + (10**12 if sandbox else 60)
             self.save()
 
     def save(self):
@@ -75,7 +82,9 @@ class World:
                     events=[e for e in events if e['seq'] > after],
                     last_seq=events[-1]['seq'] if events else -1,
                     fixture=self.fixture, data_status='fictional-test',
-                    players=['Atleta de teste A', 'Atleta de teste B'])
+                    players=[career.get(self.db, athlete)['name'] for athlete in (0, 1)],
+                    mode='local-mvp' if self.sandbox else 'shared-development',
+                    waiting=self.started > self.clock()+60)
 
     def instruction(self, command):
         raw = json.dumps(command, sort_keys=True)
@@ -111,6 +120,8 @@ class World:
         self.tick()
         return dict(week=self.db.execute('SELECT week FROM clock WHERE id=1').fetchone()[0],
                     season=2027, balance_status='provisional',
+                    mode='local-mvp' if self.sandbox else 'shared-development',
+                    results=[dict(fixture=r[0], **json.loads(r[1])) for r in self.db.execute('SELECT * FROM results')],
                     athletes=[career.get(self.db, athlete) for athlete in (0, 1)],
                     ledger=[dict(id=r[0], athlete=r[1], cents=r[2], reason=r[3], career=r[4]) for r in self.db.execute('SELECT * FROM ledger')])
 
@@ -148,6 +159,55 @@ class World:
         self.match.plans = plans
         self.started = self.clock()+60
         response = dict(fixture=self.fixture, starts_at=self.started)
+        self.db.execute('INSERT INTO commands VALUES (?,?,?)', (key, raw, json.dumps(response)))
+        self.save()
+        return response
+
+    def local_action(self, body):
+        if not self.sandbox:
+            raise ValueError('local controls unavailable')
+        action = body.get('action')
+        if action not in ('start', 'week'):
+            raise ValueError('invalid local action')
+        key = body.get('id')
+        if not isinstance(key, str) or not 1 <= len(key) <= 100:
+            raise ValueError('invalid command id')
+        raw = json.dumps(dict(body, local=True), sort_keys=True)
+        prior = self.db.execute('SELECT body,response FROM commands WHERE id=?', (key,)).fetchone()
+        if prior:
+            if prior[0] != raw:
+                raise ValueError('command id conflict')
+            return json.loads(prior[1])
+        self.tick()
+        active = self.started < self.clock()+60 and not (self.match.finished and self.clock() >= self.started+self.match.time)
+        if active:
+            raise ValueError('Conclua a partida antes de iniciar outra ou avançar a semana.')
+        athlete = career.get(self.db, 0)
+        if action == 'start':
+            if not athlete.get('customized') or athlete['retired']:
+                raise ValueError('Crie seu atleta primeiro.')
+            if athlete['location'] != 'access-court':
+                raise ValueError('Viaje para a quadra de acesso primeiro.')
+            if self.match.finished:
+                number = self.db.execute('SELECT COUNT(*) FROM results').fetchone()[0]+1
+                self.fixture = f'local-access-2027-{number}'
+                plans = [p.copy() for p in self.match.plans]
+                self.match = Match(seed=2027+number)
+                self.match.plans = plans
+            plan = body.get('plan', self.match.plans[0])
+            if set(plan) != {'intensity', 'aggression'} or any(type(v) not in (int, float) or not 0 <= v <= 1 for v in plan.values()):
+                raise ValueError('Plano tático inválido.')
+            self.match.plans[0] = plan.copy()
+            self.started = self.clock()+3
+            response = dict(accepted=True, fixture=self.fixture, starts_at=self.started)
+        else:
+            response = dict(accepted=True, week=self.career_snapshot()['week']+1)
+            self.offset += 86400
+            with self.db:
+                self.db.execute('UPDATE sandbox_clock SET offset=? WHERE id=1', (self.offset,))
+                self.db.execute('INSERT INTO commands VALUES (?,?,?)', (key, raw, json.dumps(response)))
+            self.tick()
+            return response
         self.db.execute('INSERT INTO commands VALUES (?,?,?)', (key, raw, json.dumps(response)))
         self.save()
         return response

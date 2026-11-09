@@ -64,28 +64,11 @@ func _ready() -> void:
 	box(self, Vector3(11.6, 0.045, 0.045), Vector3(0, 0.94, 0), Color.WHITE)
 	for index in range(2):
 		var player := Node3D.new()
+		player.set_script(preload("res://player_avatar.gd"))
 		add_child(player)
+		player.configure(Color("f6b343") if index == 0 else Color("eff5f6"), 1.0 if index == 0 else -1.0)
+		player.position = Vector3(1.5 if index == 0 else -1.5, 0, 12.5 if index == 0 else -12.5)
 		players.append(player)
-		var shirt := Color("f6b343") if index == 0 else Color("eff5f6")
-		box(player, Vector3(0.48, 0.6, 0.26), Vector3(0, 1.15, 0), shirt)
-		sphere(player, 0.16, Vector3(0, 1.66, 0), Color("bd8a66"))
-		for x in [-0.14, 0.14]:
-			box(player, Vector3(0.15, 0.67, 0.16), Vector3(x, 0.48, 0), Color("bd8a66"))
-			box(player, Vector3(0.19, 0.1, 0.32), Vector3(x, 0.08, -0.04), Color.WHITE)
-		box(player, Vector3(0.15, 0.55, 0.15), Vector3(0.3, 1.1, 0), Color("bd8a66"))
-		var racket := Node3D.new()
-		add_child(racket)
-		rackets.append(racket)
-		box(racket, Vector3(0.035, 0.32, 0.035), Vector3(0, -0.3, 0), Color("eeeeee"))
-		var ring := MeshInstance3D.new()
-		var torus := TorusMesh.new()
-		torus.inner_radius = 0.12
-		torus.outer_radius = 0.15
-		ring.mesh = torus
-		ring.rotation_degrees.x = 90
-		ring.scale.y = 1.3
-		ring.material_override = material(Color("ed684c"))
-		racket.add_child(ring)
 	ball = sphere(self, 0.067, Vector3(0, 1, 0), Color("e7ff54"))
 	var camera := Camera3D.new()
 	add_child(camera)
@@ -138,7 +121,8 @@ func _ready() -> void:
 	poll()
 
 func poll() -> void:
-	request.request("http://127.0.0.1:8765/match?after=%d" % cursor)
+	if not Session.url.is_empty():
+		request.request(Session.url + "/match?after=%d" % cursor, Session.headers)
 
 func received(result: int, code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
 	if result != HTTPRequest.RESULT_SUCCESS or code != 200:
@@ -169,6 +153,8 @@ func _process(delta: float) -> void:
 		if request.get_http_client_status() == HTTPClient.STATUS_DISCONNECTED:
 			poll()
 	if not connected:
+		score.text = "ATP SIMULATOR • MVP LOCAL"
+		status.text = Session.failure if not Session.failure.is_empty() else "Iniciando sessão local…"
 		return
 	official_time += delta
 	var play_delta := delta * (replay_rate if replay_mode else 1.0)
@@ -181,25 +167,31 @@ func _process(delta: float) -> void:
 			break
 		current = event
 	if current.is_empty():
-		score.text = "ATP SIMULATOR  /  Aguardando início"
+		score.text = "ATP SIMULATOR • MVP LOCAL"
+		status.text = "Crie seu atleta, prepare a semana e clique em Jogar partida de acesso."
 		return
-	score.text = "ACESSO • TESTE 2027\nA   %d sets   %d games   %s\nB   %d sets   %d games   %s" % [current.sets[0], current.games[0], point_label(current.points, 0), current.sets[1], current.games[1], point_label(current.points, 1)]
-	status.text = "%s  •  %s\nAtletas fictícios • ambiente de desenvolvimento • sem pontos ATP" % ["REPLAY" if replay_mode else "AO VIVO", current.kind]
+	score.text = "ACESSO • MVP LOCAL 2027\nA   %d sets   %d games   %s\nB   %d sets   %d games   %s" % [current.sets[0], current.games[0], point_label(current.points, 0), current.sets[1], current.games[1], point_label(current.points, 1)]
+	status.text = "%s  •  %s\nAtletas fictícios • ambiente de desenvolvimento • sem pontos ATP" % ["REPLAY" if replay_mode else "AO VIVO", event_label(str(current.kind))]
 	if current.has("tiebreak"):
 		score.text += "\nTie-break  %d–%d" % current.tiebreak
 	if current.has("velocity"):
 		var t := clampf(live_time - float(current.at), 0, float(current.duration))
 		ball.position = vector(current.start) + vector(current.velocity) * t + Vector3(0, -4.905 * t * t, 0)
 		for index in range(2):
+			var start := vector(current.positions[index])
 			var goal := vector(current.move_targets[index])
+			var travel := start.distance_to(goal)
+			players[index].position = start.lerp(goal, clampf(t / float(current.duration), 0, 1))
+			var contact := Vector3(0.5, 1.05, -0.1 if index == 0 else 0.1)
 			if int(current.player) == index and current.kind in ["serve", "return", "stroke"]:
-				goal = vector(current.start) - Vector3(0.55, float(current.start[1]), -0.4 if index == 0 else 0.4)
-			players[index].position = players[index].position.move_toward(goal, play_delta * 7)
-			rackets[index].position = players[index].position + Vector3(0.55, 1.05, 0)
-			if int(current.player) == index and current.kind in ["serve", "return", "stroke"] and t < 0.15:
-				rackets[index].position = vector(current.start) + Vector3(0, 0, sin(t * 10) * 0.25)
+				var strike := vector(current.start) - players[index].position
+				contact = strike.lerp(contact, clampf(t/0.3, 0, 1))
+			players[index].pose(live_time, minf(1, travel), contact)
 
 func point_label(points: Array, index: int) -> String:
 	if mini(points[0], points[1]) >= 3:
 		return "AD" if points[index] > points[1-index] else "40"
 	return str([0, 15, 30, 40][mini(int(points[index]), 3)])
+
+func event_label(kind: String) -> String:
+	return {"toss": "Preparação do saque", "serve": "Saque", "return": "Devolução", "stroke": "Troca de bola", "rebound": "Após o quique", "bounce": "Quique", "point": "Ponto", "game": "Game", "set": "Set", "finished": "Partida encerrada", "instruction_window": "Intervalo — oriente seu atleta", "serve_fault": "Falta no saque", "unreached": "Bola não alcançada", "ready": "Preparação", "tiebreak_start": "Início do tie-break", "tiebreak_point": "Ponto do tie-break"}.get(kind, kind)

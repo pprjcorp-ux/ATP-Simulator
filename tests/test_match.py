@@ -61,3 +61,20 @@ class MatchTests(unittest.TestCase):
         baseline.next_game()
         tired.next_game()
         self.assertNotEqual(baseline.events, tired.events)
+
+    def test_service_faults_and_change_of_ends(self):
+        m = Match(3)
+        m.rng.random = lambda: 0.0
+        m.play_point()
+        faults = [e for e in m.events if e['kind']=='serve_fault']
+        doubles = [e for e in faults if e['attempt']==2]
+        self.assertTrue(faults)
+        self.assertTrue(doubles)
+        for fault in doubles:
+            next_event = m.events[fault['seq']+1]
+            self.assertEqual(next_event['winner'], 1-fault['player'])
+            self.assertEqual(next_event['reason'], 'double_fault')
+        m = Match()
+        for _ in range(4):
+            m.award(0, 'test')
+        self.assertEqual(m.end_sign, -1)

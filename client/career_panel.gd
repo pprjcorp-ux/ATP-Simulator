@@ -1,6 +1,5 @@
 extends PanelContainer
 
-signal instruction_sent(body: Dictionary)
 var api := HTTPRequest.new()
 var action_api := HTTPRequest.new()
 var summary := Label.new()
@@ -18,10 +17,10 @@ var fixture := ""
 var refresh_elapsed := 0.0
 var busy := false
 var strings := {
-	"create": ["Criar nome e atributos • antes da partida", "Create name and attributes • before match", "Crear nombre y atributos • antes del partido"],
-	"schedule": ["Agendar próximo teste • ambos no acesso", "Schedule next test • both at access", "Programar próxima prueba • ambos en acceso"],
+	"create": ["1. Criar meu atleta", "Create name and attributes • before match", "Crear nombre y atributos • antes del partido"],
+	"schedule": ["3. Jogar partida de acesso", "Schedule next test • both at access", "Programar próxima prueba • ambos en acceso"],
 	"title": ["CARREIRA • TESTE", "CAREER • TEST", "CARRERA • PRUEBA"],
-	"identity": ["Identidade de desenvolvimento", "Development identity", "Identidad de desarrollo"],
+	"identity": ["Atleta acompanhado", "Development identity", "Identidad de desarrollo"],
 	"physical": ["Intensidade física", "Physical intensity", "Intensidad física"],
 	"risk": ["Agressividade tática", "Tactical aggression", "Agresividad táctica"],
 	"send": ["Orientar no intervalo", "Send between games", "Instrucción entre juegos"],
@@ -29,16 +28,16 @@ var strings := {
 	"rest": ["Semana: 2h academia / 4h quadra / 18h recuperação", "Week: 2h gym / 4h court / 18h recovery", "Semana: 2h gimnasio / 4h pista / 18h recuperación"],
 	"coach": ["Contratar treinador • 150 + 200/semana", "Hire coach • 150 + 200/week", "Contratar entrenador • 150 + 200/semana"],
 	"physio": ["Contratar fisioterapeuta • 100 + 120/semana", "Hire physio • 100 + 120/week", "Contratar fisioterapeuta • 100 + 120/semana"],
-	"travel": ["Viajar ao acesso • 250", "Travel to access • 250", "Viajar al acceso • 250"],
+	"travel": ["2. Viajar ao acesso • 250", "Travel to access • 250", "Viajar al acceso • 250"],
 	"equipment": ["Raquete controle / corda 24 kg • 180", "Control racket / strings 24 kg • 180", "Raqueta control / cuerdas 24 kg • 180"],
 	"sponsor": ["Patrocínio: 300 + 150/sem • exige controle", "Sponsor: 300 + 150/week • requires control", "Patrocinio: 300 + 150/sem • exige control"],
 	"decline": ["Recusar patrocínio", "Decline sponsorship", "Rechazar patrocinio"],
-	"accepted": ["Decisão confirmada pelo servidor", "Decision confirmed by server", "Decisión confirmada por servidor"],
+	"accepted": ["Decisão salva", "Decision saved", "Decisión confirmada por servidor"],
 	"offline": ["Aguardando autoridade…", "Waiting for authority…", "Esperando autoridad…"],
 	"balance": ["Saldo", "Balance", "Saldo"],
 	"fatigue": ["Fadiga", "Fatigue", "Fatiga"],
 	"ticket": ["Vaga de acesso", "Access ticket", "Plaza de acceso"],
-	"notice": ["Valores provisórios • moeda do jogo\nUma semana a cada 24 horas reais", "Provisional values • game currency\nOne week every 24 real hours", "Valores provisionales • moneda del juego\nUna semana cada 24 horas reales"]
+	"notice": ["MVP local • dados fictícios • saldo do jogo\nSalvo automaticamente neste computador", "Provisional values • game currency\nOne week every 24 real hours", "Valores provisionales • moneda del juego\nUna semana cada 24 horas reales"]
 }
 
 func tr_key(key: String) -> String:
@@ -81,7 +80,10 @@ func _ready() -> void:
 		for item in labels:
 			item[0].text = tr_key(item[1])
 		refresh())
-	caption(stack, "identity")
+	var identity_label := caption(stack, "identity")
+	if Session.local_mode:
+		identity_label.text = "Seu atleta (A) × adversário automático (B)"
+		identity.visible = false
 	identity.add_item("A")
 	identity.add_item("B")
 	stack.add_child(identity)
@@ -124,8 +126,13 @@ func _ready() -> void:
 	action_button(stack, "decline", "sponsor", {"accept": false})
 	var schedule := Button.new()
 	schedule.text = tr_key("schedule")
-	schedule.pressed.connect(func(): post("/schedule", {"id": "schedule-%s" % Time.get_ticks_usec()}))
+	schedule.pressed.connect(func(): post("/local" if Session.local_mode else "/schedule", {"id": "schedule-%s-%s" % [Time.get_unix_time_from_system(), Time.get_ticks_usec()], "action": "start", "plan": {"intensity": intensity.value, "aggression": aggression.value}}))
 	stack.add_child(schedule)
+	var week := Button.new()
+	week.text = "Avançar uma semana • treino e recuperação"
+	week.pressed.connect(func(): post("/local", {"id": "week-%s-%s" % [Time.get_unix_time_from_system(), Time.get_ticks_usec()], "action": "week"}))
+	week.visible = Session.local_mode
+	stack.add_child(week)
 	labels.append([schedule, "schedule"])
 	feedback.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	feedback.custom_minimum_size = Vector2(365, 36)
@@ -138,8 +145,8 @@ func _ready() -> void:
 	refresh()
 
 func refresh() -> void:
-	if api.get_http_client_status() == HTTPClient.STATUS_DISCONNECTED:
-		api.request("http://127.0.0.1:8765/career")
+	if not Session.url.is_empty() and api.get_http_client_status() == HTTPClient.STATUS_DISCONNECTED:
+		api.request(Session.url + "/career", Session.headers)
 
 func received(result: int, code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
 	if result != HTTPRequest.RESULT_SUCCESS or code != 200:
@@ -149,7 +156,13 @@ func received(result: int, code: int, _headers: PackedStringArray, body: PackedB
 	if not data is Dictionary:
 		return
 	var athlete = data.athletes[selected]
+	var result_text := ""
+	if not data.results.is_empty():
+		var last_result = data.results.back()
+		result_text = "Última partida: %s • %d–%d em sets" % ["vitória" if int(last_result.winner) == selected else "derrota", last_result.sets[selected], last_result.sets[1-selected]]
 	summary.text = "%s   •   2027 / %d\n%s: %.2f   |   %s: %.1f\n%s: %s" % [athlete.name, data.week + 1, tr_key("balance"), athlete.balance_cents / 100.0, tr_key("fatigue"), athlete.fatigue, tr_key("ticket"), str(athlete.access_ticket)]
+	if not result_text.is_empty():
+		summary.text += "\n" + result_text
 
 func update_window(events: Array, elapsed: float, match_fixture: String) -> void:
 	fixture = match_fixture
@@ -171,8 +184,13 @@ func submit(action: String, values: Dictionary) -> void:
 func post(path: String, body: Dictionary) -> void:
 	if busy:
 		return
+	if Session.url.is_empty():
+		feedback.text = "Aguarde a sessão local iniciar."
+		return
 	busy = true
-	action_api.request("http://127.0.0.1:8765" + path, ["Content-Type: application/json"], HTTPClient.METHOD_POST, JSON.stringify(body))
+	var headers := Session.headers.duplicate()
+	headers.append("Content-Type: application/json")
+	action_api.request(Session.url + path, headers, HTTPClient.METHOD_POST, JSON.stringify(body))
 
 func action_received(result: int, code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
 	busy = false
@@ -191,7 +209,7 @@ func _process(delta: float) -> void:
 
 func create_dialog() -> void:
 	var dialog := ConfirmationDialog.new()
-	dialog.title = "360 points • 40–80 each • provisional balance"
+	dialog.title = "Criar atleta • distribua 360 pontos (40–80 por atributo)"
 	var stack := VBoxContainer.new()
 	var name_input := LineEdit.new()
 	name_input.placeholder_text = "Nome / Name / Nombre"
@@ -200,7 +218,7 @@ func create_dialog() -> void:
 	for attribute in ["serve", "forehand", "backhand", "return", "fitness", "speed"]:
 		var row := HBoxContainer.new()
 		var label := Label.new()
-		label.text = attribute
+		label.text = {"serve": "Saque", "forehand": "Forehand", "backhand": "Backhand", "return": "Devolução", "fitness": "Condicionamento", "speed": "Velocidade"}[attribute]
 		label.custom_minimum_size.x = 120
 		row.add_child(label)
 		var value := SpinBox.new()

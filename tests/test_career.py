@@ -40,8 +40,8 @@ class CareerTests(unittest.TestCase):
         self.command('team', role='coach', hire=True)
         self.command('travel', destination='access-court')
         self.command('plan_week', gym=4, court=10, recovery=10, focus='backhand')
-        with self.assertRaises(ValueError):
-            self.command('plan_week', gym=4, court=10, recovery=10, focus='backhand')
+        revised = self.command('plan_week', gym=4, court=10, recovery=10, focus='backhand')
+        self.assertEqual(revised['training_hours'], 0)
         self.now[0] += 86400
         snapshot = self.world.career_snapshot()
         after = snapshot['athletes'][0]

@@ -18,6 +18,7 @@ class Match:
         self.games = [0, 0]
         self.sets = [0, 0]
         self.server = 0
+        self.end_sign = 1
         self.positions = [[1.5, 0, 12.5], [-1.5, 0, -12.5]]
         self.profiles = [dict(speed=60, fitness=60, forehand=60, fatigue=0, equipment='balanced', tension=24) for _ in range(2)]
         self.plans = [dict(intensity=0.6, aggression=0.5) for _ in range(2)]
@@ -39,34 +40,53 @@ class Match:
         if kind in ('serve', 'return', 'stroke') and abs(end[0]) <= 4.115:
             receiver = 1-player
             receive_x = end[0] * (1.4 if kind == 'serve' else 1.05)
-            targets[receiver] = [receive_x - 0.55, 0, -12.4 if receiver == 1 else 12.4]
+            targets[receiver] = [receive_x - 0.55, 0, -12.4*self.end_sign if receiver == 1 else 12.4*self.end_sign]
         if kind == 'rebound':
-            targets[player] = [end[0]-0.55, 0, end[2]+(0.4 if player == 0 else -0.4)]
+            targets[player] = [end[0]-0.55, 0, end[2]+(0.4*self.end_sign if player == 0 else -0.4*self.end_sign)]
         self.emit(kind, player=player, start=start, end=end, move_targets=targets,
                   duration=duration, velocity=trajectory(start, end, duration),
                   positions=[p.copy() for p in self.positions])
+        for index in (0, 1):
+            speed = (4+self.profiles[index]['speed']/30)*(0.7+self.plans[index]['intensity']*0.5)*(1-self.profiles[index]['fatigue']/250)
+            distance = sum((targets[index][axis]-self.positions[index][axis])**2 for axis in (0, 2))**0.5
+            fraction = min(1, speed*duration/distance) if distance else 1
+            targets[index] = [self.positions[index][axis]+(targets[index][axis]-self.positions[index][axis])*fraction for axis in range(3)]
+        # The event owns a reference to move_targets; render the exact same displacement.
+        self.positions = [p.copy() for p in targets]
         self.time += duration
 
     def play_point(self):
         hitter = self.server
-        side = 1 if hitter == 0 else -1
+        side = self.end_sign if hitter == 0 else -self.end_sign
         court_side = 1 if sum(self.tie_points or self.points) % 2 == 0 else -1
         self.positions[hitter] = [1.5 * court_side * side, 0, 12.5 * side]
         self.positions[1-hitter] = [-1.5 * court_side * side, 0, -12.5 * side]
-        # Toss and contact are explicit events. The service lands diagonally.
-        origin = [self.positions[hitter][0] + 0.55, 1.2, 12.1 * side]
-        contact = [origin[0], 2.8, origin[2]]
-        self.flight(origin, contact, 0.7, 'toss', hitter)
-        target = [-court_side * side * self.rng.uniform(1, 3), 0.034, -4.8 * side]
-        self.flight(contact, target, 0.66, 'serve', hitter)
-        self.emit('bounce', position=target)
+        # Both serves are simulated; a service fault never awards an ordinary point.
+        for attempt in (1, 2):
+            origin = [self.positions[hitter][0]+0.55, 1.2, 12.1*side]
+            contact = [origin[0], 2.8, origin[2]]
+            self.flight(origin, contact, 0.7, 'toss', hitter)
+            skill = self.profiles[hitter].get('serve', 60)
+            fault_chance = max(0.015, (0.12 if attempt == 1 else 0.045)+(60-skill)*0.001)
+            fault = self.rng.random() < fault_chance
+            target = [-court_side*side*self.rng.uniform(1, 3), 0.034, (-7.2 if fault else -4.8)*side]
+            self.flight(contact, target, 0.66 if attempt == 1 else 0.82, 'serve', hitter)
+            self.emit('bounce', position=target)
+            if not fault:
+                break
+            self.emit('serve_fault', player=hitter, attempt=attempt, reason='service_long')
+            self.time += 1.5
+            if attempt == 2:
+                self.award(1-hitter, 'double_fault')
+                self.time += 2.5
+                return
         # Receive after the bounce; racket position is derived from contact.
         contact = [target[0] * 1.4, 1.05, -11.4 * side]
         self.flight(target, contact, 0.58, 'rebound', 1-hitter)
         hitter = 1-hitter
         stroke = 0
         while True:
-            side = 1 if hitter == 0 else -1
+            side = self.end_sign if hitter == 0 else -self.end_sign
             self.positions[hitter] = [contact[0] - 0.55, 0, contact[2] + 0.4 * side]
             plan = self.plans[hitter]
             # Aiming and errors depend on the active server-side plan.
@@ -89,7 +109,7 @@ class Match:
             distance = sum((desired[i]-self.positions[receiver][i])**2 for i in (0, 2))**0.5
             capacity = self.profiles[receiver]
             speed = (4 + capacity['speed']/30) * (0.7 + self.plans[receiver]['intensity']*0.5) * (1-capacity['fatigue']/250)
-            available = (0.88-plan['intensity']*0.12)+0.42
+            available = 0.42
             if distance > speed*available:
                 self.flight(target, contact, 0.42, 'rebound', receiver)
                 landing = [contact[0], 0.034, contact[2]-side*2]
@@ -115,6 +135,8 @@ class Match:
             self.games[winner] += 1
             self.points = [0, 0]
             self.game_number += 1
+            if self.game_number % 2 == 1:
+                self.end_sign *= -1
             self.server = 1-self.server
             self.emit('game', winner=winner)
             # Standard set threshold, tie-break implemented separately below.
@@ -134,6 +156,8 @@ class Match:
         self.tie_points[winner] += 1
         self.emit('tiebreak_point', winner=winner, reason=reason, tiebreak=self.tie_points.copy())
         total = sum(self.tie_points)
+        if total % 6 == 0:
+            self.end_sign *= -1
         self.server = self.tie_first_server if ((total + 1) // 2) % 2 == 0 else 1-self.tie_first_server
         if self.tie_points[winner] >= 7 and self.tie_points[winner]-self.tie_points[1-winner] >= 2:
             self.games[winner] += 1
@@ -143,6 +167,8 @@ class Match:
             self.tie_points = None
             self.server = 1-self.tie_first_server
             self.game_number += 1
+            if self.game_number % 2 == 1:
+                self.end_sign *= -1
             if self.sets[winner] == 2:
                 self.finished = True
                 self.emit('finished', winner=winner)
