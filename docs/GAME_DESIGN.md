@@ -15,9 +15,19 @@ Repositório escolhido pelo usuário: https://github.com/pprjcorp-ux/ATP-Simulat
 | Tema | Decisão do usuário |
 | --- | --- |
 | Plataforma | Windows e macOS desde a primeira versão. |
+| Distribuição | Gratuita, com o objetivo de formar uma comunidade. |
+| Dificuldade | Simulação dura: anos no circuito, derrotas frequentes e possibilidade real de a carreira não dar certo. |
+| Modo de jogo | Circuito online compartilhado, com atletas administrados por pessoas competindo entre si. |
+| Organização online | Um único circuito mundial e um ranking compartilhado por todos. |
+| Partidas entre humanos | Horários agendados pelo circuito; orientação ao vivo e plano tático automático para ausências. |
+| Idiomas iniciais | Português, inglês e espanhol. |
 | Partidas | 3D realista, com proporções, movimentos e câmera próximos de uma transmissão de TV. |
 | Carreira inicial | Criar um profissional no Challenger, perto do top 300. |
 | Mundo | Calendário e adversários reais, com o atleta do jogador criado. |
+| Renovação do circuito | Tenistas reais envelhecem e se aposentam; novos talentos fictícios entram no circuito. |
+| Temporada inicial | 2027. |
+| Ritmo de acompanhamento | Partida comum em aproximadamente 10–15 minutos, com opção de mudar a velocidade. |
+| Condição financeira inicial | Apoio limitado: reserva ou patrocinador que permita planejar a primeira temporada. |
 | Controle dos golpes | Automático; o jogador assiste à partida. |
 | Orientações durante a partida | Ajustar intensidade e instruções táticas entre games. |
 | Profundidade da gestão | Máximo detalhe, com controle de treinos, finanças, equipe, viagens e equipamentos. |
@@ -30,6 +40,10 @@ Repositório escolhido pelo usuário: https://github.com/pprjcorp-ux/ATP-Simulat
 | Intensidade | Definir o esforço em cada partida, equilibrando desempenho e risco de lesão. |
 | Execução do desenvolvimento | Migrar para a nuvem assim que a implementação começar. |
 
+O usuário decidiu terminar o desenho do jogo nesta conversa antes de abrir o chat de desenvolvimento na nuvem. Preparar um ambiente não equivale a autorizar o início da implementação enquanto essa etapa de decisões continua aberta.
+
+**Compatibilidade ainda em discussão:** começar perto do top 300 foi uma escolha anterior. A escolha posterior de um único ranking mundial exige definir como novos atletas entram sem garantir a mesma faixa limitada a um número ilimitado de pessoas. A proposta é preservar nível técnico de Challenger e conquistar a posição pelos resultados, mas essa mudança ainda depende da resposta do usuário.
+
 ## Proposta de ciclo de jogo — para discussão
 
 1. Avaliar condição física, evolução técnica, dinheiro e situação no ranking.
@@ -41,7 +55,7 @@ Repositório escolhido pelo usuário: https://github.com/pprjcorp-ux/ATP-Simulat
 7. Receber um resumo que conecte resultado, desempenho, desgaste, receitas e ranking às decisões anteriores.
 8. Replanejar a carreira com as novas informações.
 
-O ranking precisa refletir o circuito inteiro: os adversários também disputam torneios e conquistam ou perdem pontos. A escolha de um torneio deve respeitar calendário, elegibilidade e acesso à chave. A temporada inicial e o nível de detalhe das regras ainda serão definidos.
+O ranking precisa refletir o circuito inteiro: os adversários também disputam torneios e conquistam ou perdem pontos. A escolha de um torneio deve respeitar calendário, elegibilidade e acesso à chave. A temporada inicial é 2027; a revisão das regras aplicáveis ainda será concluída.
 
 ## Princípios propostos para os sistemas
 
@@ -49,10 +63,13 @@ O ranking precisa refletir o circuito inteiro: os adversários também disputam 
 - **Treino com custo de oportunidade:** melhorar um fundamento ocupa tempo que poderia ser investido em outro, em competição ou em recuperação.
 - **Desgaste acumulado:** esforço de uma partida deve influenciar as seguintes e o planejamento do calendário.
 - **Intensidade contextual:** o custo e a utilidade de jogar forte variam com condicionamento, duração, adversário e situação da carreira.
+- **Esforço e tática separados:** intensidade física não é o mesmo controle que agressividade dos golpes. Uma estratégia defensiva pode exigir grande esforço em trocas longas.
 - **Equipamento com trocas claras:** opções favorecem características diferentes; trocar raquete ou cordas não deve equivaler a comprar uma vitória.
 - **Patrocínio como decisão:** remuneração pode vir acompanhada de obrigações e restrições que façam sentido na carreira.
 - **Explicação do resultado:** o pós-jogo deve mostrar evidências de acertos e limitações, sem tratar um único evento aleatório como prova de uma estratégia errada.
 - **Mundo persistente:** a temporada progride para todos, e a carreira pode continuar por vários anos.
+- **Concorrência compartilhada:** humanos e adversários controlados pelo jogo participam do mesmo circuito, com resultados persistentes e calendário comum.
+- **Dificuldade explicável:** sucesso não é garantido. Condição, habilidade, tática, concorrência e recursos devem sustentar o desafio, com evidências para o jogador analisar suas decisões.
 
 Parâmetros de treino, fadiga e lesões serão modelos de jogo sujeitos a balanceamento; ainda não foram estabelecidos números ou fórmulas.
 
@@ -70,28 +87,37 @@ A engine, o desempenho alvo e os formatos de distribuição ainda estão em aber
 
 Um trecho de carreira no Challenger que já conecte treino, descanso, torneio, intensidade, equipamento, uma proposta de patrocínio, partida 3D e atualização do ranking. Esse recorte serve para testar o ciclo completo; não substitui o objetivo final de uma carreira até o número 1.
 
-Aprovar um protótipo requer observar uma partida real da simulação, com golpes e placar coerentes, e verificar efeitos das decisões sobre evolução, desempenho e desgaste. Também é necessário salvar e retomar a carreira sem perder o estado.
+Aprovar um protótipo requer observar uma partida real da simulação, com golpes e placar coerentes, e verificar efeitos das decisões sobre evolução, desempenho e desgaste. Também é necessário persistir e retomar a carreira sem perder o estado oficial do circuito. Com o modo online confirmado, o recorte deve demonstrar dois participantes na mesma partida e a execução do plano de ausência.
 
 Ainda não há aprovação do tamanho desse recorte ou da qualidade visual inicial.
 
 ## Decisões seguintes
 
 - Referências concretas de qualidade visual e animação para a direção realista escolhida.
-- Temporada e data de início da carreira, incluindo elenco real e histórico inicial de pontos.
-- Ritmo: duração de uma partida assistida, aceleração e melhores momentos.
+- Data exata de início em 2027, elenco real e histórico inicial de pontos, com versões e datas das fontes.
+- Comportamento da aceleração e dos melhores momentos dentro do ritmo de 10–15 minutos escolhido.
 - Idade, orçamento e personalização do atleta inicial.
 - Dimensões do treino, equipe, economia e configuração de cordas.
-- Tratamento de marcas reais e conteúdo visual antes de qualquer publicação comercial.
+- Tratamento de marcas reais e conteúdo visual antes da distribuição pública gratuita.
 - Escopo do primeiro recorte jogável e critérios de aceitação.
+- Entrada de novos atletas no ranking mundial e velocidade do calendário compartilhado.
+- Disponibilidade para partidas agendadas, plano de ausência e funcionamento da velocidade de reprodução durante jogos ao vivo.
+
+As propostas detalhadas estão em [CAREER_SYSTEMS.md](CAREER_SYSTEMS.md). Elas não devem ser promovidas a decisões confirmadas sem a conversa correspondente.
+
+O desenho do mundo compartilhado e suas decisões pendentes estão em [ONLINE_CIRCUIT.md](ONLINE_CIRCUIT.md).
 
 ## Referências oficiais localizadas
 
 - Calendário ATP: https://www.atptour.com/en/tournaments/
-- Visão do calendário ATP 2026: https://www.atptour.com/en/news/what-is-the-2026-atp-tour-calendar/
+- Anúncio do calendário ATP 2027: https://www.atptour.com/en/news/2027-atp-tour-calendar-release
+- Calendário ATP 2027, versão de 14 de janeiro de 2026: https://www.atptour.com/-/media/files/calendar-pdfs/2026/2027-atp-tour-calendar-14-january-2026.pdf
 - Perguntas sobre o ranking: https://www.atptour.com/en/rankings/rankings-faq
 - Explicação do ranking ao vivo: https://www.atptour.com/en/rankings/rankings-faq/live
 
 Pesquisa inicial em 9 de novembro de 2026. O acesso direto à página de perguntas do ranking retornou HTTP 403; os resultados indexados não substituem a validação do regulamento completo. Calendário Challenger, distribuição de pontos, elegibilidade, resultados obrigatórios e exceções precisam ser verificados na fonte correspondente à temporada escolhida antes de implementar as regras.
+
+O anúncio oficial confirma que o calendário principal de 2027 já foi publicado. A pesquisa não validou um calendário Challenger completo de 2027 nem um conjunto completo de regras e rankings iniciais de 2027. O PDF de janeiro foi localizado como referência inicial, sem comprovação de ser a revisão mais recente. Dados ainda não disponíveis ou não verificados não devem ser inventados e apresentados como oficiais. O desenvolvimento pode usar dados provisórios identificados, com atualização posterior das fontes.
 
 ## Execução do projeto
 
