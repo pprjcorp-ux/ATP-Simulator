@@ -45,6 +45,6 @@ A implementação está em um **ambiente de nuvem**. A preparação local está 
 
 ## Próximos passos
 
-O usuário aprovou o escopo V1 em 9 de novembro de 2026 e autorizou concluir o ambiente e abrir o chat de desenvolvimento na nuvem. Selecionar a engine e a infraestrutura com base na experiência pretendida e na exportação para Windows e macOS. Valores de balanceamento e referências de qualidade serão refinados com o protótipo.
+O escopo V1 foi aprovado em 9 de novembro de 2026. A engine está fixada em Godot 4.6.3; a autoridade de desenvolvimento usa Python/SQLite. Próximas entregas: contato e animação humana, ritmo de 10–15 minutos, chaves de acesso com capacidade válida, dados oficiais e ranking, temporadas completas e execução real em Windows/macOS. O PR inicial é uma fundação em desenvolvimento, sem encerrar o objetivo do jogo.
 
 O nome do projeto é provisório. O uso de dados, marcas e materiais visuais será documentado conforme as fontes forem selecionadas.
