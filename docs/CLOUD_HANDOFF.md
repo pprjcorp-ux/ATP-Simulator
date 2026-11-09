@@ -4,7 +4,7 @@
 
 O usuário determinou que a implementação do jogo comece na nuvem. A etapa local prepara o produto e o repositório. Este documento não comprova uma migração: é necessário observar um ambiente executável, um checkout correto e comandos executados nesse ambiente.
 
-**Direção atual:** as decisões estruturais foram consolidadas em [V1_SCOPE.md](V1_SCOPE.md), que aguarda a revisão final do usuário antes de abrir o chat de desenvolvimento na nuvem. Uma configuração de ambiente pode estar em preparação, mas isso não autoriza iniciar o código do jogo antes de concluir essa etapa com o usuário.
+**Direção atual:** o usuário aprovou [V1_SCOPE.md](V1_SCOPE.md) em 9 de novembro de 2026 e autorizou concluir a configuração do ambiente e abrir um novo chat para iniciar o desenvolvimento na nuvem. Essa revisão está encerrada; não solicitar novamente autorização para começar a implementação dentro do escopo aprovado.
 
 Repositório: https://github.com/pprjcorp-ux/ATP-Simulator
 
@@ -20,7 +20,7 @@ Ler primeiro [GAME_DESIGN.md](GAME_DESIGN.md). As decisões já respondidas pelo
 6. Gestão no máximo detalhe: treinos, finanças, equipe, viagens e equipamentos.
 7. Treino físico e técnico, patrocínios, raquete, cordas, calendário, descanso e risco de lesão são partes obrigatórias da carreira.
 8. Temporada inicial de 2027.
-9. Partida comum acompanhada em aproximadamente 10–15 minutos, com velocidade ajustável.
+9. Partida comum acompanhada em aproximadamente 10–15 minutos, com relógio comum ao vivo e pausa/aceleração nos replays.
 10. Apoio financeiro inicial limitado para permitir o planejamento da primeira temporada.
 11. Distribuição gratuita para formar uma comunidade.
 12. Simulação dura, com derrotas frequentes, carreira de vários anos e possibilidade real de não alcançar o topo.
@@ -59,9 +59,9 @@ Uma interface de gestão isolada, uma partida apenas textual ou um demonstrador 
 
 As camadas devem se conectar de forma observável. A trajetória da bola, o contato com a raquete, o resultado dos pontos e o placar precisam ser coerentes. A aceleração de uma partida não pode alterar suas regras ou favorecer um atleta.
 
-## Primeiro recorte proposto para revisão final
+## Primeiro recorte aprovado
 
-Proposta: uma semana do mundo com um grupo pequeno de teste, conforme [V1_SCOPE.md](V1_SCOPE.md). Conectar criação do atleta, agenda, treino, descanso, viagem, equipamento, finanças, uma proposta de patrocínio, evento de acesso e partida 3D. Incluir orientações entre games, pós-jogo, atualização do ranking nos eventos pontuáveis, persistência e retomada de sessão. Demonstrar também a partida entre dois participantes e a execução de um plano de ausência.
+Uma semana do mundo com um grupo pequeno de teste, conforme [V1_SCOPE.md](V1_SCOPE.md). Conectar criação do atleta, agenda, treino, descanso, viagem, equipamento, finanças, uma proposta de patrocínio, evento de acesso e partida 3D. Incluir orientações entre games, pós-jogo, atualização do ranking nos eventos pontuáveis, persistência e retomada de sessão. Demonstrar também a partida entre dois participantes e a execução de um plano de ausência.
 
 Fora desse recorte inicial, mas dentro do objetivo final: circuito e temporadas completos, variedade de contratos e equipe, progressão de longo prazo, manutenção de todos os adversários, regras de ranking e elegibilidade da temporada escolhida e qualidade visual consistente.
 

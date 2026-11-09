@@ -1,6 +1,6 @@
-# ATP Simulator — proposta consolidada da primeira versão
+# ATP Simulator — escopo aprovado da primeira versão
 
-**Estado:** decisões estruturais confirmadas; proposta de execução aguardando revisão final do usuário. Ainda não há jogo implementado. A implementação começará na nuvem após essa revisão.
+**Estado:** escopo e sequência de execução aprovados pelo usuário em 9 de novembro de 2026, incluindo o relógio comum ao vivo e a pausa/aceleração nos replays. O usuário autorizou concluir a configuração do ambiente e abrir um novo chat de desenvolvimento na nuvem. Ainda não há jogo implementado.
 
 ## A experiência
 
@@ -32,9 +32,9 @@ Os atletas executam os golpes automaticamente. O jogador acompanha em 3D realist
 
 As partidas são agendadas pelo circuito. Quem está presente pode alterar instruções e intensidade nos intervalos. Na ausência, o plano tático preparado continua sendo executado.
 
-O alvo para uma partida comum é 10–15 minutos. Proposta para conciliar o online com a velocidade ajustável: relógio comum durante a partida ao vivo, com pausa e aceleração na reprodução de replays. Quem chega atrasado pode acompanhar um resumo até alcançar o momento ao vivo. Essa adaptação faz parte desta revisão final.
+O alvo para uma partida comum é 10–15 minutos. Está aprovado um relógio comum durante a partida ao vivo, com pausa e aceleração na reprodução de replays. Quem chega atrasado pode acompanhar um resumo até alcançar o momento ao vivo.
 
-## O primeiro recorte jogável proposto
+## O primeiro recorte jogável aprovado
 
 Uma semana do mundo, com um grupo pequeno de teste no mesmo circuito, deve demonstrar o ciclo completo:
 
@@ -49,7 +49,7 @@ Uma semana do mundo, com um grupo pequeno de teste no mesmo circuito, deve demon
 
 Esse recorte testa os sistemas conectados. O objetivo final continua incluindo o circuito completo, temporadas sucessivas e a carreira até a disputa pelo número 1.
 
-## Sequência de execução proposta
+## Sequência de execução aprovada
 
 1. **Ambiente de nuvem:** confirmar checkout, ferramentas, capacidade de renderização e fluxo de exportação; escolher e fixar a engine.
 2. **Partida e mundo compartilhado:** provar movimentação, golpes, contato raquete/bola, placar, duas pessoas na mesma partida, instruções entre games e plano de ausência.

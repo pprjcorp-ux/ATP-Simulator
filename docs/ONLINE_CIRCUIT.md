@@ -26,9 +26,9 @@ O mundo avança uma semana do jogo por dia real, com temporada de aproximadament
 
 ### Acompanhamento e velocidade de reprodução
 
-O alvo confirmado é aproximadamente 10–15 minutos por partida comum, com opção de mudar a velocidade. O modo online exige que ambos os participantes tenham o mesmo prazo para orientar.
+O alvo confirmado é aproximadamente 10–15 minutos por partida comum. O modo online exige que ambos os participantes tenham o mesmo prazo para orientar.
 
-Proposta a validar: a partida ao vivo usa um relógio comum. Replays podem ser acelerados, e quem chega atrasado pode acompanhar o resumo antes de alcançar o momento ao vivo. Reprodução e pausa locais não congelam o adversário, não revelam o futuro e não permitem editar pontos já concluídos.
+Regra aprovada pelo usuário em 9 de novembro de 2026: a partida ao vivo usa um relógio comum. Replays podem ser pausados ou acelerados, e quem chega atrasado pode acompanhar o resumo antes de alcançar o momento ao vivo. Reprodução e pausa locais não congelam o adversário, não revelam o futuro e não permitem editar pontos já concluídos.
 
 ## Planejamento e ausências — proposta
 

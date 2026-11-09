@@ -30,7 +30,7 @@ Repositório escolhido pelo usuário: https://github.com/pprjcorp-ux/ATP-Simulat
 | Renovação do circuito | Tenistas reais envelhecem e se aposentam; novos talentos fictícios entram no circuito. |
 | Temporada inicial | 2027. |
 | Velocidade do mundo | Uma semana do jogo por dia real, aproximadamente 52 dias por temporada. |
-| Ritmo de acompanhamento | Partida comum em aproximadamente 10–15 minutos, com opção de mudar a velocidade. |
+| Ritmo de acompanhamento | Partida comum em aproximadamente 10–15 minutos; relógio comum ao vivo e pausa/aceleração nos replays. |
 | Condição financeira inicial | Apoio limitado: reserva ou patrocinador que permita planejar a primeira temporada. |
 | Controle dos golpes | Automático; o jogador assiste à partida. |
 | Orientações durante a partida | Ajustar intensidade e instruções táticas entre games. |
@@ -44,9 +44,9 @@ Repositório escolhido pelo usuário: https://github.com/pprjcorp-ux/ATP-Simulat
 | Intensidade | Definir o esforço em cada partida, equilibrando desempenho e risco de lesão. |
 | Execução do desenvolvimento | Migrar para a nuvem assim que a implementação começar. |
 
-O usuário decidiu terminar o desenho do jogo nesta conversa antes de abrir o chat de desenvolvimento na nuvem. Preparar um ambiente não equivale a autorizar o início da implementação enquanto essa etapa de decisões continua aberta.
+O usuário concluiu a revisão estrutural em 9 de novembro de 2026 e aprovou o início do desenvolvimento na nuvem. Autorizou retomar o chat de configuração do ambiente e abrir um novo chat de desenvolvimento.
 
-A proposta consolidada para revisão está em [V1_SCOPE.md](V1_SCOPE.md). A posição inicial perto do top 300 foi substituída, por decisão do usuário, pelo nível técnico de Challenger com classificação conquistada por resultados.
+O escopo consolidado aprovado está em [V1_SCOPE.md](V1_SCOPE.md). A posição inicial perto do top 300 foi substituída, por decisão do usuário, pelo nível técnico de Challenger com classificação conquistada por resultados.
 
 ## Proposta de ciclo de jogo — para discussão
 
@@ -87,25 +87,24 @@ Dados de atletas, equipamentos, calendários e regras devem ser identificados po
 
 A engine, o desempenho alvo e os formatos de distribuição ainda estão em aberto. A direção visual confirmada é realista, e as plataformas iniciais são Windows e macOS. O repositório contém apenas documentação, sem dependências ou código do jogo.
 
-## Primeiro recorte jogável proposto
+## Primeiro recorte jogável aprovado
 
 Uma semana do mundo, com um grupo pequeno de teste, que já conecte criação do atleta, treino, descanso, evento de acesso, intensidade, equipamento, uma proposta de patrocínio, partida 3D e atualização do ranking nos eventos pontuáveis. O detalhamento está em [V1_SCOPE.md](V1_SCOPE.md). Esse recorte serve para testar o ciclo completo; não substitui o objetivo final de uma carreira até o número 1.
 
 Aprovar um protótipo requer observar uma partida real da simulação, com golpes e placar coerentes, e verificar efeitos das decisões sobre evolução, desempenho e desgaste. Também é necessário persistir e retomar a carreira sem perder o estado oficial do circuito. Com o modo online confirmado, o recorte deve demonstrar dois participantes na mesma partida e a execução do plano de ausência.
 
-Ainda não há aprovação do tamanho desse recorte ou da qualidade visual inicial.
+O usuário aprovou esse recorte. A qualidade visual precisa ser demonstrada durante o desenvolvimento; a aprovação do escopo não comprova a qualidade de um resultado ainda inexistente.
 
 ## Decisões seguintes
 
 - Referências concretas de qualidade visual e animação para a direção realista escolhida.
 - Data exata de início em 2027, elenco real e histórico inicial de pontos, com versões e datas das fontes.
-- Comportamento da aceleração e dos melhores momentos dentro do ritmo de 10–15 minutos escolhido.
+- Detalhes da seleção de melhores momentos e da retomada até o momento ao vivo, respeitando o relógio comum aprovado.
 - Faixas de idade, limites dos atributos e valor exato do apoio financeiro, como parâmetros de balanceamento da criação completa já confirmada.
 - Dimensões do treino, equipe, economia e configuração de cordas.
 - Tratamento de marcas reais e conteúdo visual antes da distribuição pública gratuita.
-- Revisão final do primeiro recorte jogável e seus critérios de aceitação em V1_SCOPE.md.
 - Quantidade de vagas e regras detalhadas do circuito de acesso confirmado.
-- Disponibilidade para partidas agendadas, plano de ausência e funcionamento da velocidade de reprodução durante jogos ao vivo.
+- Disponibilidade para partidas agendadas e condições detalhadas do plano de ausência.
 
 As propostas detalhadas estão em [CAREER_SYSTEMS.md](CAREER_SYSTEMS.md). Elas não devem ser promovidas a decisões confirmadas sem a conversa correspondente.
 

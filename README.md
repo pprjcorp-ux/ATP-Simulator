@@ -14,7 +14,7 @@ Crie um profissional com nível técnico de Challenger, conquiste sua posição 
 - Português, inglês e espanhol.
 - Envelhecimento e aposentadoria dos tenistas reais, com entrada de novos talentos fictícios.
 - Início em 2027, com dados oficiais identificados por fonte e revisão.
-- Partidas acompanhadas em aproximadamente 10–15 minutos, com velocidade ajustável.
+- Partidas acompanhadas em aproximadamente 10–15 minutos; relógio comum ao vivo e pausa/aceleração nos replays.
 - Gestão com máximo detalhe: treinos, finanças, equipe, viagens e equipamentos.
 - Apoio financeiro inicial limitado para planejar a primeira temporada.
 - Uma semana do jogo por dia real: aproximadamente 52 dias por temporada.
@@ -37,14 +37,14 @@ A implementação começará em um **ambiente de nuvem**. A preparação local e
 
 ## Documentação
 
-- [Proposta consolidada da primeira versão](docs/V1_SCOPE.md)
+- [Escopo aprovado da primeira versão](docs/V1_SCOPE.md)
 - [Visão e decisões de produto](docs/GAME_DESIGN.md)
 - [Proposta dos sistemas de carreira](docs/CAREER_SYSTEMS.md)
 - [Circuito mundial online](docs/ONLINE_CIRCUIT.md)
 - [Preparação e passagem para o ambiente de nuvem](docs/CLOUD_HANDOFF.md)
 
-## Próximas decisões
+## Próximos passos
 
-Revisar a proposta consolidada da primeira versão com o usuário. Depois da aprovação, iniciar o chat de desenvolvimento na nuvem e selecionar a engine e a infraestrutura com base na experiência pretendida e na exportação para Windows e macOS. Valores de balanceamento e referências de qualidade serão refinados com o protótipo.
+O usuário aprovou o escopo V1 em 9 de novembro de 2026 e autorizou concluir o ambiente e abrir o chat de desenvolvimento na nuvem. Selecionar a engine e a infraestrutura com base na experiência pretendida e na exportação para Windows e macOS. Valores de balanceamento e referências de qualidade serão refinados com o protótipo.
 
 O nome do projeto é provisório. O uso de dados, marcas e materiais visuais será documentado conforme as fontes forem selecionadas.

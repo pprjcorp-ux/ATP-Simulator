@@ -47,7 +47,7 @@ Proposta de controles: intensidade, agressividade, profundidade, direção prefe
 
 A instrução entra em vigor no próximo game. O atleta continua tomando decisões de acordo com a bola recebida e sua capacidade; uma orientação não obriga um golpe fisicamente impossível nem altera pontos já disputados.
 
-O acompanhamento em 10–15 minutos deve ser conciliado com a partida online ao vivo. Proposta: um relógio comum para a partida, com janela de orientação em cada intervalo; o plano preparado pelo jogador continua quando não houver uma nova instrução. Replays podem ter velocidade variável. A reprodução local não deve permitir conhecer resultados futuros nem modificar pontos já concluídos. O funcionamento exato ainda será alinhado com o usuário.
+O usuário aprovou o acompanhamento em aproximadamente 10–15 minutos com um relógio comum ao vivo e pausa/aceleração nos replays. Há uma janela de orientação entre games; o plano preparado pelo jogador continua quando não houver uma nova instrução. A reprodução local não deve permitir conhecer resultados futuros nem modificar pontos já concluídos. A duração das janelas e a seleção de melhores momentos serão calibradas no protótipo.
 
 ## Raquetes e cordas
 
